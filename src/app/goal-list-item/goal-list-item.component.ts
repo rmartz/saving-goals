@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Goal } from '../shared/models/goal.model';
+import { Goals } from '../shared/services/goals.service';
 
 @Component({
   selector: 'app-goal-list-item',
@@ -9,5 +10,5 @@ export class GoalListItemComponent {
   @Input()
   public goal: Goal;
 
-  constructor() { }
+  constructor(public goals: Goals) { }
 }

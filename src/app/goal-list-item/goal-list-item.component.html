@@ -1,21 +1,41 @@
 <div class="goal-item"
   [ngClass]="{'goal-item-complete': goal.isComplete(),
-              'goal-item-overdrawn': goal.isOverdrawn(),
-              'goal-item-active': goal.isActive(),
-              'goal-item-disabled': !goal.isActive()}">
+              'goal-item-overdrawn': goal.isOverdrawn()}">
   <h2 class="inline">{{goal.label}}</h2>
   <div class="inline">
     <p class="inline">
       {{ goal.current | currency:"USD" }} of {{ goal.target | currency:"USD" }} goal
     </p>
-    <button (click)="editMode = true">Edit</button>
+    <button
+      *ngIf="!goal.purchased"
+      (click)="purchaseMode = !purchaseMode; editMode = false">
+      Purchase
+    </button>
+    <button (click)="editMode = !editMode; purchaseMode = false">Edit</button>
   </div>
-  <mat-progress-bar [value]="100 * goal.current / goal.target"></mat-progress-bar>
+  <mat-progress-bar
+    *ngIf="!goal.isFunded()"
+    [value]="100 * goal.current / goal.target">
+  </mat-progress-bar>
 
-  <ng-container *ngIf="editMode">
-    <app-edit-goal-item
-      [goal]="goal"
-      (close)="editMode = false">
-    </app-edit-goal-item>
+  <app-edit-goal-item
+    *ngIf="editMode"
+    [goal]="goal"
+    (close)="editMode = false">
+  </app-edit-goal-item>
+
+  <ng-container *ngIf="purchaseMode">
+    <p>
+      How much did it ultimately cost?
+    </p>
+    <input #purchaseCost
+      type="number"
+      [(ngModel)]="target"
+      step="0.01"
+      pattern="^\d+(?:\.\d{1,2})?$"
+      required>
+    <button (click)="goals.purchase(goal, purchaseCost.value)">
+      Confirm
+    </button>
   </ng-container>
 </div>

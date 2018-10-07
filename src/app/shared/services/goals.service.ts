@@ -24,6 +24,11 @@ export class Goals {
     if (!this._goals.includes(goal)) {
       this._goals.push(goal);
     }
+    if (goal.current > goal.target) {
+      const difference = goal.current - goal.target;
+      goal.current -= difference;
+      this.disperse(difference);
+    }
     this.saveGoals();
   }
 
@@ -66,5 +71,12 @@ export class Goals {
     const weightedGoals = goals.map<[Goal, number]>((goal, index) => [goal, 1.0 / (index + 1)]);
     const sum = weightedGoals.reduce((a, b) => a + b[1], 0);
     return weightedGoals.map<[Goal, number]>(value => [value[0], value[1] / sum]);
+  }
+
+
+  public purchase(goal: Goal, cost: number) {
+    goal.target = cost;
+    goal.purchased = true;
+    this.save(goal);
   }
 }

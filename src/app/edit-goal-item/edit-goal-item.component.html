@@ -29,4 +29,8 @@
     [disabled] = "!goalEditForm.form.valid">
     Save
   </button>
+
+  <div *ngIf="goal && target < goal.current">
+      Target is below the goal's current progress - on save the difference will be distributed to other goals.
+    </div>
 </form>

@@ -8,17 +8,22 @@ export class Goals {
   private _list = new BehaviorSubject<Goal[]>([]);
 
   constructor() {
-    const goal = new Goal();
-    goal.label = 'Foobar';
-    goal.target = 5;
-    goal.current = 1;
-    this.save(goal);
+    const savedState = localStorage.getItem('goals');
+    if (savedState !== null) {
+      const savedGoals = JSON.parse(savedState);
+      for (const goalJson of savedGoals) {
+        const goal = new Goal();
+        Object.assign(goal, goalJson);
+        this.save(goal);
+      }
+    }
   }
 
   public save(goal: Goal) {
     if (!this._goals.includes(goal)) {
       this._goals.push(goal);
     }
+    localStorage.setItem('goals', JSON.stringify(this._goals));
     this._list.next(this._goals);
   }
 

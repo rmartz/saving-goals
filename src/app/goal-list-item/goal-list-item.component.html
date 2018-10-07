@@ -1,14 +1,21 @@
-<h2 class="inline">{{goal.label}}</h2>
-<ng-container *ngIf="!editMode">
-  <button class="inline" (click)="editMode = true">Edit</button>
+<div class="goal-item"
+  [ngClass]="{'goal-item-complete': goal.isComplete(),
+              'goal-item-overdrawn': goal.isOverdrawn(),
+              'goal-item-active': goal.isActive(),
+              'goal-item-disabled': !goal.isActive()}">
+  <h2 class="inline">{{goal.label}}</h2>
+  <div class="inline">
+    <p class="inline">
+      {{ goal.current | currency:"USD" }} of {{ goal.target | currency:"USD" }} goal
+    </p>
+    <button (click)="editMode = true">Edit</button>
+  </div>
   <mat-progress-bar [value]="100 * goal.current / goal.target"></mat-progress-bar>
-  <p>
-    {{ goal.current | currency:"USD" }} of {{ goal.target | currency:"USD" }} goal
-  </p>
-</ng-container>
-<ng-container *ngIf="editMode">
-  <app-edit-goal-item
-    [goal]="goal"
-    (close)="editMode = false">
-  </app-edit-goal-item>
-</ng-container>
+
+  <ng-container *ngIf="editMode">
+    <app-edit-goal-item
+      [goal]="goal"
+      (close)="editMode = false">
+    </app-edit-goal-item>
+  </ng-container>
+</div>

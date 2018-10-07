@@ -4,3 +4,19 @@
 .inline {
   display: inline-block;
 }
+
+.goal-list li {
+  list-style: none;
+}
+
+.goal-item {
+  width: 35rem;
+  border-radius: 0.7rem;
+  border: 1px solid #333;
+  padding: 0.3rem 0.3rem 1.3rem 0.3rem;
+  margin-bottom: 2rem;
+}
+
+.goal-item-complete {
+  background-color: #f0fff0;
+}

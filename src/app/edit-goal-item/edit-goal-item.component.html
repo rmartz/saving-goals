@@ -1,4 +1,30 @@
-<label for="goalName">Name</label>
-<input type="text" placeholder="Name" id="goalName" [(ngModel)]="name">
+<form (ngSubmit)="save()"
+  #goalEditForm="ngForm">
+  <label for="goalName">
+    Name
+  </label>
+  <input
+    #goalName
+    name="goalName"
+    type="text"
+    placeholder="Name"
+    [(ngModel)]="name"
+    required>
 
-<button (click)="save()">Save</button>
+
+  <label for="goalName">
+    Target
+  </label>
+  <input
+    #goalTarget
+    name="goalTarget"
+    type="number"
+    [(ngModel)]="target"
+    required>
+
+  <button
+    type="submit"
+    [disabled] = "!goalEditForm.form.valid">
+    Save
+  </button>
+</form>

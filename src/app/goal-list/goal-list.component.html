@@ -1,5 +1,5 @@
 <ul>
   <li *ngFor="let goal of goals.list() | async">
-    {{goal.label}}
+    <app-goal-list-item [goal]="goal"></app-goal-list-item>
   </li>
 </ul>

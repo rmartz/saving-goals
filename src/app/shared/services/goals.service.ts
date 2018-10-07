@@ -24,12 +24,16 @@ export class Goals {
     if (!this._goals.includes(goal)) {
       this._goals.push(goal);
     }
-    localStorage.setItem('goals', JSON.stringify(this._goals));
-    this._list.next(this._goals);
+    this.saveGoals();
   }
 
   public list() {
     return this._list.asObservable();
+  }
+
+  private saveGoals() {
+    localStorage.setItem('goals', JSON.stringify(this._goals));
+    this._list.next(this._goals);
   }
 
   public disperse(total: number) {
@@ -53,6 +57,8 @@ export class Goals {
       // Some goals reached their cap and we have balance left over
       // Repeat the process again among the remaining goals
       return this.disperse(remainder / 100);
+    } else {
+      this.saveGoals();
     }
   }
 

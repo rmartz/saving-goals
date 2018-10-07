@@ -1,3 +1,6 @@
 <h2>{{goal.label}}</h2>
-
+<mat-progress-bar [value]="100 * goal.current / goal.target"></mat-progress-bar>
+<p>
+  {{ goal.current | currency:"USD" }} of {{ goal.target | currency:"USD" }} goal
+</p>
 <app-edit-goal-item [goal]="goal"></app-edit-goal-item>

@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AppComponent } from './app.component';
 import { Goals } from './shared/services/goals.service';
@@ -17,7 +18,8 @@ import { GoalListItemComponent } from './goal-list-item/goal-list-item.component
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    MatProgressBarModule
   ],
   providers: [
     Goals

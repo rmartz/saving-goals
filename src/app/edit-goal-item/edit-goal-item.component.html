@@ -20,6 +20,8 @@
     name="goalTarget"
     type="number"
     [(ngModel)]="target"
+    step="0.01"
+    pattern="^\d+(?:\.\d{1,2})?$"
     required>
 
   <button

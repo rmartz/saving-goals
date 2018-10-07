@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Goals } from '../shared/services/goals.service';
 import { Goal } from '../shared/models/goal.model';
 
@@ -10,6 +10,9 @@ export class EditGoalItemComponent implements OnInit {
 
   @Input()
   public goal: Goal;
+
+  @Output()
+  public close = new EventEmitter();
 
   public name: string;
   public target: number;
@@ -32,5 +35,6 @@ export class EditGoalItemComponent implements OnInit {
     goal.target = this.target;
 
     this.goals.save(goal);
+    this.close.emit(this.goal);
   }
 }

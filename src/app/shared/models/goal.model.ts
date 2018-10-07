@@ -6,4 +6,8 @@ export class Goal {
   label: string;
   target: number;
   current: number;
+
+  public isActive(): boolean {
+    return this.current < this.target;
+  }
 }

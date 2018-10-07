@@ -1,3 +1,9 @@
+
+<input type="number" #disperseAmount>
+<button (click)="goals.disperse(disperseAmount.value)">
+  Disperse
+</button>
+
 <ul>
   <li *ngFor="let goal of goals.list() | async">
     <app-goal-list-item [goal]="goal"></app-goal-list-item>

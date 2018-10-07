@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let goal of goals.list() | async">
+    {{goal.label}}
+  </li>
+</ul>

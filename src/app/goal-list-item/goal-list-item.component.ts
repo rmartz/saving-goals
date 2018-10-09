@@ -10,5 +10,8 @@ export class GoalListItemComponent {
   @Input()
   public goal: Goal;
 
+  public editMode: boolean;
+  public purchaseMode: boolean;
+
   constructor(public goals: Goals) { }
 }

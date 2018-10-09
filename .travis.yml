@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+- node
+branches:
+  only:
+  - develop
+cache:
+  directories:
+  - node_modules
+before_script:
+- npm install -g @angular/cli
+script:
+- ng lint
+- ng build --prod
+deploy:
+  provider: s3
+  access_key_id:
+    secure: ppZC9B5bwDna1Qa85LRdwEPr+EBNNIY5ggJkJk1nzrWSYYU58l/4cGBnha8WTAp9Ip2HCNXSgkV/M2XW7pdnb6CJVJLxa6+l5QSXbY47HgyoQcYyk9RIAYycT1YIZ+yi9m5cXSStbE4bAp3VSOSpfuWEGiziwXRqj+kuVHj8VswJvnvB7FlVkp4pD6iVC+0VmXfvCHyyu4L89GjtLyKK241XN6esWmprnVno7FnxgbVaypIhG+qmYPWIitPquh+8B4Lf5U4UBSeDDYMd0/1knj4S0V6/LEVQnBEMNXv990IEWY6bVRWXT3aUx9AWly+DjGTUNyamekAn6o/UShg5nW6ktHxz0QeAR85FwzcWBYVRf3BHmMvfhdWh2iVC2Krl2g/kQWK29RzEM4RJd0wkmnCQqxjNZAgyqGKyi3mqzeKcT9t06BOFd/Q4Pf2YCuMCWyZA1Up8js5sWR5tJmBZvEzGouC6aWL1b3GB2xmumCAEnAL9ShlW1TqE3YfR3eyKeVRPBEb73OsqgITq4Ei2iQxREa85VeVKlt8kYNGhd2g4t7i85O34rJDNDQrS3/r0vLpP/moFTVDR10OvZHOxjM8AiVvF7vLihWbX1JyWtslhw5iujYt8QN10Klf+ciod1SKttHz02TIdrX3loFDow8+4gLVghSP+1sSJ/1fJXJk=
+  secret_access_key:
+    secure: PIinCVKu4MfUMYFBitWAAerQXRrGfAcTMT15XbBQj94pIXly0Y3tPFLi7qTsvHeeMFBA+C3j0LYyjUytIjCYYh6DeawBNc56tn4wKbrMbnQw3DXggi4oVU0Fr8E4RfdtEoSAMzTOnaRBULbtc0SAZnwCjipadnT7izoDd5FZiT3Qk/1XEDHpUNPU4U2xd7pEojjnfBakdh7POFli1kO4JuSAfAgATvXVCl6q00JEHIxTVel4Ou5EsEZyfdHWJ/XIIXEyySvBcGxaQSOz/imHgM5CKtj/1c+QMxhWFXmPQeeXmeyfwRwcQdRKT8SuoiO/O9PbqB4JFYWZrTm/h/Gu4R1of8idtQFbP/sgIYxfRZG71TtzSrp/F75FQnHMJpti349CeI1+BTsGhi/ca/Ab9WoCLQgGHGAiwgh/3np21U8TvxDmB5Tb3aT9neifoIGduMdO5/6N7UStxU4TH01QShJqIjJ8rt5ytnxjHoWz+LGlpoKabqMopUYouFBvYqV/BxoEAR9k2wT6O/KDIf8VZFFeN6fs7DAcjQgx1FzOfJGbjceJMIa+KgfAQd/yhgS+tLlHRo/TAQAL9ge6rEXttQi7+5pK4sJ6jUFASZg9gXgTxQ6YlaBkN7OFwYNG/AHVfiVHrENFN7pxFe6PuECk3Dq8FzFpMQKg8HM+kQCkzKA=
+  bucket: savings.reedmartz.com
+  skip_cleanup: true
+  local_dir: dist/saving-goals
+  on:
+    branch: develop
+notifications:
+  email:
+    on_failure: change
+    on_success: always

@@ -5,7 +5,7 @@
   <h2 class="inline">{{goal.label}}</h2>
   <div class="inline">
     <p class="inline">
-      {{ goal.current | currency:"USD" }} of {{ goal.target | currency:"USD" }} goal
+      {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
     </p>
     <button
       *ngIf="!goal.purchased"

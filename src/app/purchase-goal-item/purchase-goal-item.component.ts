@@ -16,14 +16,15 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public cost: number;
 
-  constructor(private goals: Goals) { }
+  constructor(public goals: Goals) { }
 
   public ngOnInit() {
-    this.cost = this.goal.target;
+    this.cost = parseFloat((this.goal.target / 100).toFixed(2));
   }
 
   public save() {
-    this.goals.purchase(this.goal, this.cost);
+    const costCents = Math.round(this.cost * 100);
+    this.goals.purchase(this.goal, costCents);
     this.close.emit(this.goal);
   }
 }

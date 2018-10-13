@@ -22,7 +22,7 @@ export class EditGoalItemComponent implements OnInit {
   public ngOnInit() {
     if (this.goal !== undefined) {
       this.name = this.goal.label;
-      this.target = this.goal.target;
+      this.target = parseFloat((this.goal.target / 100).toFixed(2));
     }
   }
 
@@ -32,9 +32,13 @@ export class EditGoalItemComponent implements OnInit {
       goal = new Goal();
     }
     goal.label = this.name;
-    goal.target = this.target;
+    goal.target = Math.round(this.target * 100);
 
     this.goals.save(goal);
+    this.doClose();
+  }
+
+  public doClose() {
     this.close.emit(this.goal);
   }
 }

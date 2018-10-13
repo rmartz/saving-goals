@@ -61,9 +61,12 @@ export class Goals {
   }
 
   public disperse(total: number) {
-    // Multiply by 100 to deal with whole number cents
-    total *= 100;
     const activeGoals = this._goals.filter(goal => goal.isActive());
+    if (activeGoals.length === 0) {
+      // There are no unfunded goals left to contribute to
+      return;
+    }
+
     const goalWeights = this.weightGoals(activeGoals);
 
     let remainder = total;
@@ -71,16 +74,16 @@ export class Goals {
       // Figure how much our weight says this goal should receive
       const target = Math.ceil(total * weight);
       // Do not give more to the goal than the goal actually wants, or what we have left
-      const value = Math.min(target, remainder, 100 * (goal.target - goal.current));
+      const value = Math.min(target, remainder, goal.target - goal.current);
       remainder -= value;
       // Convert from whole number cents to fractional dollars
-      goal.current += value / 100;
+      goal.current += value;
     }
 
     if (remainder > 0) {
       // Some goals reached their cap and we have balance left over
       // Repeat the process again among the remaining goals
-      return this.disperse(remainder / 100);
+      return this.disperse(remainder);
     } else {
       this.saveGoals();
     }

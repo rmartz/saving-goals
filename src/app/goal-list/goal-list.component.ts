@@ -9,4 +9,9 @@ export class GoalListComponent {
   constructor(public goals: Goals) { }
 
   public createMode = false;
+
+  public disperse(amount: number) {
+    const amountCents = Math.round(amount * 100);
+    this.goals.disperse(amountCents);
+  }
 }

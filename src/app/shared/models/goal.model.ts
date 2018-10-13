@@ -1,13 +1,17 @@
 export class Goal {
   constructor() {
     this.current = 0;
-    this.purchased = false;
+    this.created = new Date();
   }
 
   label: string;
   target: number;
   current: number;
-  purchased: boolean;
+
+  created: Date;
+  purchased: Date;
+  closed: Date;
+
 
   public isFunded(): boolean {
     return this.current >= this.target;
@@ -18,14 +22,18 @@ export class Goal {
     return !this.isFunded();
   }
 
+  public isPurchased(): boolean {
+    return (this.purchased !== undefined);
+  }
+
   public isComplete(): boolean {
     // A goal is complete if it has been fully funded but not yet purchased.
-    return !this.purchased && this.isFunded();
+    return this.isPurchased() && this.isFunded();
   }
 
   public isHidden(): boolean {
     // Goals are hidden once they are purchased and fully funded
-    return this.purchased && this.isFunded();
+    return this.isPurchased() && this.isFunded();
   }
 
   public isVisible(): boolean {
@@ -34,6 +42,6 @@ export class Goal {
 
   public isOverdrawn(): boolean {
     // A goal is overdrawn if it was purchased but still has yet to reach its goal.
-    return this.purchased && !this.isFunded();
+    return this.isPurchased() && !this.isFunded();
   }
 }

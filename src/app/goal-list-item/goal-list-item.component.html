@@ -8,7 +8,7 @@
       {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
     </p>
     <button
-      *ngIf="!goal.purchased"
+      *ngIf="!goal.isPurchased()"
       (click)="purchaseMode = !purchaseMode; editMode = false">
       Purchase
     </button>

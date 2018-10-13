@@ -43,7 +43,7 @@ export class Goals {
       map<Goal[], number>(goals => {
         return goals.map(goal => {
           // Return the current balance, minus the target if the goal is marked as purchased
-          return goal.current - (goal.purchased ? goal.target : 0);
+          return goal.current - (goal.isPurchased() ? goal.target : 0);
         }).reduce((a, b) => a + b, 0);
       })
     );
@@ -98,7 +98,7 @@ export class Goals {
 
   public purchase(goal: Goal, cost: number) {
     goal.target = cost;
-    goal.purchased = true;
+    goal.purchased = new Date();
     this.save(goal);
   }
 }

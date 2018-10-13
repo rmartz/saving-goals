@@ -22,7 +22,7 @@
   </button>
 
   <p *ngIf="cost > (goals.totalBalance() | async)">
-    The amount is greater than the total balance allocated to goals, purchasing will prevent other goals from being purchased.
+    The amount is greater than the total balance allocated to goals, purchasing will prevent other goals from being purchased until a positive balance is reached.
   </p>
   <p *ngIf="cost > goal.current && cost <= (goals.totalBalance() | async)">
     The amount is greater than the goal's currently saved balance, purchasing might cause other goals to be delayed.

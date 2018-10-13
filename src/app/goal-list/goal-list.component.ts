@@ -7,4 +7,6 @@ import { Goals } from '../shared/services/goals.service';
 })
 export class GoalListComponent {
   constructor(public goals: Goals) { }
+
+  public createMode = false;
 }

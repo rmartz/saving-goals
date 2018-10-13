@@ -4,10 +4,23 @@
   Disperse
 </button>
 
-<ul class="goal-list">
-  <ng-container *ngFor="let goal of goals.list() | async">
-    <li *ngIf="goal.isVisible()">
+<div class="goal-list">
+  <div class="new-goal-item-create">
+    <button (click)="createMode = !createMode">Add goal</button>
+  </div>
+
+  <ul>
+    <li *ngIf="createMode">
+      <div class="goal-item">
+        <app-edit-goal-item
+          (close)="createMode = false">
+        </app-edit-goal-item>
+      </div>
+    </li>
+    <ng-container *ngFor="let goal of goals.list() | async">
+      <li *ngIf="goal.isVisible()">
         <app-goal-list-item [goal]="goal"></app-goal-list-item>
       </li>
-  </ng-container>
-</ul>
+    </ng-container>
+  </ul>
+</div>

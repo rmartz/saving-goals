@@ -7,10 +7,17 @@
 
 .goal-list {
   width: 35rem;
+  padding: 3rem;
+}
+
+.goal-list ul {
+  margin: 0;
+  padding: 0;
 }
 
 .goal-list li {
   list-style: none;
+
 }
 
 .goal-item {
@@ -30,7 +37,7 @@
 }
 
 .goal-item-affordable {
-  background-color: #edc4ff;
+  background-color: #e0dff0;
 }
 
 .goal-item-affordable.goal-item-complete {

@@ -17,10 +17,8 @@
         </app-edit-goal-item>
       </div>
     </li>
-    <ng-container *ngFor="let goal of goals.list() | async">
-      <li *ngIf="goal.isVisible()">
-        <app-goal-list-item [goal]="goal"></app-goal-list-item>
-      </li>
-    </ng-container>
+    <li *ngFor="let goal of goals.visible() | async">
+      <app-goal-list-item [goal]="goal"></app-goal-list-item>
+    </li>
   </ul>
 </div>

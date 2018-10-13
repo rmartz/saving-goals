@@ -37,6 +37,12 @@ export class Goals {
     return this._list.asObservable();
   }
 
+  public visible(): Observable<Goal[]> {
+    return this.list().pipe(
+      map(goals => goals.filter(goal => goal.isVisible()))
+    );
+  }
+
   public totalBalance(): Observable<number> {
     // Return the total balance of all goals, minus any amount remaining for goals that have been early purchased
     return this.list().pipe(

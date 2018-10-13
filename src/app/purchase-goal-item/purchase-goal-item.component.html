@@ -1,0 +1,30 @@
+<form (ngSubmit)="save()"
+  #goalEditForm="ngForm">
+
+
+
+  <label for="goalCost">
+      How much did it ultimately cost?
+  </label>
+  <input
+    #goalCost
+    name="goalCost"
+    type="number"
+    [(ngModel)]="cost"
+    step="0.01"
+    pattern="^\d+(?:\.\d{1,2})?$"
+    required>
+
+  <button
+    type="submit"
+    [disabled] = "!goalEditForm.form.valid">
+    Purchase
+  </button>
+
+  <p *ngIf="cost > (goals.totalBalance() | async)">
+    The amount is greater than the total balance allocated to goals, purchasing will prevent other goals from being purchased.
+  </p>
+  <p *ngIf="cost > goal.current && cost <= (goals.totalBalance() | async)">
+    The amount is greater than the goal's currently saved balance, purchasing might cause other goals to be delayed.
+  </p>
+</form>

@@ -29,18 +29,9 @@
     (close)="editMode = false">
   </app-edit-goal-item>
 
-  <ng-container *ngIf="purchaseMode">
-    <p>
-      How much did it ultimately cost?
-    </p>
-    <input #purchaseCost
-      type="number"
-      [(ngModel)]="target"
-      step="0.01"
-      pattern="^\d+(?:\.\d{1,2})?$"
-      required>
-    <button (click)="goals.purchase(goal, purchaseCost.value)">
-      Confirm
-    </button>
-  </ng-container>
+  <app-purchase-goal-item
+    *ngIf="purchaseMode"
+    [goal]="goal"
+    (close)="purchaseMode = false">
+  </app-purchase-goal-item>
 </div>

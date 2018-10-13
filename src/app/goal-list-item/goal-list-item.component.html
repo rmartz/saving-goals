@@ -1,6 +1,7 @@
 <div class="goal-item"
   [ngClass]="{'goal-item-complete': goal.isComplete(),
-              'goal-item-overdrawn': goal.isOverdrawn()}">
+              'goal-item-overdrawn': goal.isOverdrawn(),
+              'goal-item-affordable': (goals.checkBalance(goal) | async) && !goal.isOverdrawn()}">
   <h2 class="inline">{{goal.label}}</h2>
   <div class="inline">
     <p class="inline">
@@ -17,6 +18,10 @@
     *ngIf="!goal.isFunded()"
     [value]="100 * goal.current / goal.target">
   </mat-progress-bar>
+
+  <p *ngIf="goal.isComplete() && !(goals.checkBalance(goal) | async)">
+    Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
+  </p>
 
   <app-edit-goal-item
     *ngIf="editMode"

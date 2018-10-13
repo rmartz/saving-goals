@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { Goal } from '../models/goal.model';
-import { GoalListComponent } from '../../goal-list/goal-list.component';
 
 @Injectable()
 export class Goals {
@@ -20,7 +21,7 @@ export class Goals {
     }
   }
 
-  public save(goal: Goal) {
+  public save(goal: Goal): void {
     if (!this._goals.includes(goal)) {
       this._goals.push(goal);
     }
@@ -32,8 +33,26 @@ export class Goals {
     this.saveGoals();
   }
 
-  public list() {
+  public list(): Observable<Goal[]> {
     return this._list.asObservable();
+  }
+
+  public totalBalance(): Observable<number> {
+    // Return the total balance of all goals, minus any amount remaining for goals that have been early purchased
+    return this.list().pipe(
+      map<Goal[], number>(goals => {
+        return goals.map(goal => {
+          // Return the current balance, minus the target if the goal is marked as purchased
+          return goal.current - (goal.purchased ? goal.target : 0);
+        }).reduce((a, b) => a + b, 0);
+      })
+    );
+  }
+
+  public checkBalance(goal: Goal): Observable<boolean> {
+    return this.totalBalance().pipe(
+      map<number, boolean>(balance => balance >= goal.target)
+    );
   }
 
   private saveGoals() {

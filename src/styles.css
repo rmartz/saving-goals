@@ -18,9 +18,17 @@
 }
 
 .goal-item-complete {
-  background-color: #f0fff0;
+  background-color: #fff48c;
 }
 
 .goal-item-overdrawn {
-  background-color: #fff0f0;
+  background-color: #fcbeb6;
+}
+
+.goal-item-affordable {
+  background-color: #edc4ff;
+}
+
+.goal-item-affordable.goal-item-complete {
+  background-color: #79ff79;
 }

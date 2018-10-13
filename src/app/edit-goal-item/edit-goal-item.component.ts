@@ -35,10 +35,11 @@ export class EditGoalItemComponent implements OnInit {
     goal.target = Math.round(this.target * 100);
 
     this.goals.save(goal);
-    this.doClose();
+    this.close.emit(this.goal);
   }
 
-  public doClose() {
+  public cancel($event) {
+    $event.preventDefault();
     this.close.emit(this.goal);
   }
 }

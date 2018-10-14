@@ -18,7 +18,9 @@
       </div>
     </li>
     <li *ngFor="let goal of goals.visible() | async">
-      <app-goal-list-item [goal]="goal"></app-goal-list-item>
+      <app-goal-list-item
+        [goal]="goal">
+      </app-goal-list-item>
     </li>
   </ul>
 </div>

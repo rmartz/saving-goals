@@ -1,37 +1,53 @@
-<div class="goal-item"
-  [ngClass]="{'goal-item-complete': goal.isComplete(),
-              'goal-item-overdrawn': goal.isOverdrawn(),
-              'goal-item-affordable': (goals.checkBalance(goal) | async) && !goal.isOverdrawn()}">
-  <h2 class="inline">{{goal.label}}</h2>
-  <div class="inline">
-    <p class="inline">
-      {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
-    </p>
-    <button
-      *ngIf="!goal.isPurchased()"
-      (click)="purchaseMode = !purchaseMode; editMode = false">
-      Purchase
-    </button>
-    <button (click)="editMode = !editMode; purchaseMode = false">Edit</button>
+<div class="goal-item-row">
+  <div class="goal-insert">
+    <a class="link">
+      &#8679;
+    </a>
+    <hr>
+    <a class="link">
+      &#8681;
+    </a>
   </div>
-  <mat-progress-bar
-    *ngIf="!goal.isFunded()"
-    [value]="100 * goal.current / goal.target">
-  </mat-progress-bar>
 
-  <p *ngIf="goal.isComplete() && !(goals.checkBalance(goal) | async)">
-    Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
-  </p>
+  <div class="goal-item"
+    [ngClass]="{'goal-item-complete': goal.isComplete(),
+                'goal-item-overdrawn': goal.isOverdrawn(),
+                'goal-item-affordable': (goals.checkBalance(goal) | async) && !goal.isOverdrawn()}">
 
-  <app-edit-goal-item
-    *ngIf="editMode"
-    [goal]="goal"
-    (close)="editMode = false">
-  </app-edit-goal-item>
 
-  <app-purchase-goal-item
-    *ngIf="purchaseMode"
-    [goal]="goal"
-    (close)="purchaseMode = false">
-  </app-purchase-goal-item>
+
+
+    <h2 class="inline">{{goal.label}}</h2>
+    <div class="inline">
+      <p class="inline">
+        {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
+      </p>
+      <button
+        *ngIf="!goal.isPurchased()"
+        (click)="purchaseMode = !purchaseMode; editMode = false">
+        Purchase
+      </button>
+      <button (click)="editMode = !editMode; purchaseMode = false">Edit</button>
+    </div>
+    <mat-progress-bar
+      *ngIf="!goal.isFunded()"
+      [value]="100 * goal.current / goal.target">
+    </mat-progress-bar>
+
+    <p *ngIf="goal.isComplete() && !(goals.checkBalance(goal) | async)">
+      Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
+    </p>
+
+    <app-edit-goal-item
+      *ngIf="editMode"
+      [goal]="goal"
+      (close)="editMode = false">
+    </app-edit-goal-item>
+
+    <app-purchase-goal-item
+      *ngIf="purchaseMode"
+      [goal]="goal"
+      (close)="purchaseMode = false">
+    </app-purchase-goal-item>
+  </div>
 </div>

@@ -1,12 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+body {
+  font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .inline {
   display: inline-block;
 }
 
+.link {
+  cursor: pointer;
+}
+
 .button-negative {
   background-color: #f76f6f;
+}
+
+.goal-insert {
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1rem;
 }
 
 .goal-list {
@@ -17,19 +31,30 @@
 .goal-list ul {
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .goal-list li {
   list-style: none;
+  width: 100%;
+  margin-bottom: 2rem;
+}
 
+.goal-item-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .goal-item {
-  width: 100%;
   border-radius: 0.7rem;
   border: 1px solid #333;
   padding: 0.3rem;
-  margin-bottom: 2rem;
+  width: 100%;
+  flex-grow: 1;
 }
 
 .goal-item-complete {

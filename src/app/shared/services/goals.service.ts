@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Goal } from '../models/goal.model';
+import { roundRandom } from '../utils/round';
 
 @Injectable()
 export class Goals {
@@ -67,9 +68,13 @@ export class Goals {
   }
 
   public disperse(total: number) {
+    if (total <= 0) {
+      // No value to contribute
+      return;
+    }
     const activeGoals = this._goals.filter(goal => goal.isActive());
     if (activeGoals.length === 0) {
-      // There are no unfunded goals left to contribute to
+      // There are no unfunded goals to contribute to
       return;
     }
 
@@ -78,11 +83,14 @@ export class Goals {
     let remainder = total;
     for (const [goal, weight] of goalWeights) {
       // Figure how much our weight says this goal should receive
-      const target = Math.ceil(total * weight);
+      // We want to use whole numbers to avoid floating point error.
+      // Math.floor could cause an infinite loop with 1 cent never distributed.
+      // Math.ceil causes a one-sided rounding error that means small contributions might always get used up before they reach lower goals.
+      // roundRandom probabilistically rounds up or down, so it should minimize risk of always starving lower goals.
+      const target = roundRandom(total * weight);
       // Do not give more to the goal than the goal actually wants, or what we have left
       const value = Math.min(target, remainder, goal.target - goal.current);
       remainder -= value;
-      // Convert from whole number cents to fractional dollars
       goal.current += value;
     }
 

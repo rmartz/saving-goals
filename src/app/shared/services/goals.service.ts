@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 
 import { Goal } from '../models/goal.model';
 import { roundRandom } from '../utils/round';
+import { swapItems } from '../utils/ordering';
 
 @Injectable()
 export class Goals {
@@ -118,5 +119,23 @@ export class Goals {
   public delete(goal: Goal) {
     this._goals = this._goals.filter(element => element !== goal);
     this.disperse(goal.current);
+  }
+
+  public moveUp(goal: Goal) {
+    const index = this._goals.indexOf(goal);
+    if (index <= 0) {
+      return;
+    }
+    swapItems(this._goals, index, index - 1);
+    this.saveGoals();
+  }
+
+  public moveDown(goal: Goal) {
+    const index = this._goals.indexOf(goal);
+    if (index < 0 || index + 1 >= this._goals.length) {
+      return;
+    }
+    swapItems(this._goals, index, index + 1);
+    this.saveGoals();
   }
 }

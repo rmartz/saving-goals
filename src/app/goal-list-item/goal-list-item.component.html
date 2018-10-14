@@ -1,10 +1,14 @@
 <div class="goal-item-row">
   <div class="goal-insert">
-    <a class="link">
+    <a
+      class="link"
+      (click)="goals.moveUp(goal)">
       &#8679;
     </a>
     <hr>
-    <a class="link">
+    <a
+      class="link"
+      (click)="goals.moveDown(goal)">
       &#8681;
     </a>
   </div>

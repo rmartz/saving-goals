@@ -42,4 +42,8 @@ export class EditGoalItemComponent implements OnInit {
     $event.preventDefault();
     this.close.emit(this.goal);
   }
+
+  public delete() {
+    this.goals.delete(this.goal);
+  }
 }

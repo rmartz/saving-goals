@@ -101,10 +101,14 @@ export class Goals {
     return weightedGoals.map<[Goal, number]>(value => [value[0], value[1] / sum]);
   }
 
-
   public purchase(goal: Goal, cost: number) {
     goal.target = cost;
     goal.purchased = new Date();
     this.save(goal);
+  }
+
+  public delete(goal: Goal) {
+    this._goals = this._goals.filter(element => element !== goal);
+    this.disperse(goal.current);
   }
 }

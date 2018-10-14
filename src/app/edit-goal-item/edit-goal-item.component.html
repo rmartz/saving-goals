@@ -33,7 +33,14 @@
     Cancel
   </button>
 
-  <div *ngIf="goal && target < goal.current">
-      Target is below the goal's current progress - on save the difference will be distributed to other goals.
-    </div>
+  <div *ngIf="goal && target * 100 < goal.current">
+    Target is below the goal's current progress - on save the difference will be distributed to other goals.
+  </div>
 </form>
+
+<app-action-confirm
+  *ngIf="(goal !== undefined) && !goal.isPurchased()"
+  [displayClass]="'button-negative'"
+  (confirmed)="delete()"
+  prompt="Delete">
+</app-action-confirm>

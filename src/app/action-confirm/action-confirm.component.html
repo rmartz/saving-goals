@@ -1,0 +1,18 @@
+<div *ngIf="!confirmMode">
+  <button
+    [ngClass]="displayClass"
+    (click)="confirmMode = true">
+    {{prompt}}
+  </button>
+</div>
+<div *ngIf="confirmMode">
+  Are you sure?
+  <button
+    [ngClass]="displayClass"
+    (click)="confirm()">
+    {{prompt}}
+  </button>
+  <button (click)="cancel()">
+    Cancel
+  </button>
+</div>

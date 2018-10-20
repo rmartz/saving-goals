@@ -25,7 +25,7 @@ body {
 
 .goal-list {
   width: 35rem;
-  padding: 3rem;
+  padding: 0.5rem;
 }
 
 .goal-list ul {
@@ -39,7 +39,7 @@ body {
 .goal-list li {
   list-style: none;
   width: 100%;
-  margin-bottom: 2rem;
+  margin: 0.5rem 0 0.5rem 0;
 }
 
 .goal-item-row {

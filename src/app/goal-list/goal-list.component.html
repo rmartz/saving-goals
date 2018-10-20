@@ -1,20 +1,35 @@
-
-<input type="number" #disperseAmount>
-<button (click)="disperse(disperseAmount.value); disperseAmount.value = ''">
-  Disperse
-</button>
-
 <div class="goal-list">
-  <div class="new-goal-item-create">
-    <button (click)="createMode = !createMode">Add goal</button>
+
+  <input type="number" #disperseAmount>
+  <button (click)="disperse(disperseAmount.value); disperseAmount.value = ''">
+    Disperse
+  </button>
+
+  <div style="float: right">
+    Saved: {{((goals.totalBalance() | async) / 100) | currency}}
+  </div>
+
+  <hr>
+
+  <div class="new-goal-item-create" *ngIf="!createMode">
+    <button (click)="createMode = !createMode">Add goal +</button>
   </div>
 
   <ul>
     <li *ngIf="createMode">
-      <div class="goal-item">
-        <app-edit-goal-item
-          (close)="createMode = false">
-        </app-edit-goal-item>
+      <div class="goal-item-row">
+        <div class="goal-insert">
+            <hr>
+        </div>
+        <div class="goal-item">
+          <h2>New Goal</h2>
+          <mat-progress-bar
+            [value]="0">
+          </mat-progress-bar>
+          <app-edit-goal-item
+            (close)="createMode = false">
+          </app-edit-goal-item>
+        </div>
       </div>
     </li>
     <li *ngFor="let goal of goals.visible() | async">

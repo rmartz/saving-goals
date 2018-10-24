@@ -1,0 +1,15 @@
+<div class="budget-display">
+  <input type="number" #disperseAmount>
+  <button (click)="disperse(disperseAmount.value); disperseAmount.value = ''">
+    Disperse
+  </button>
+  <div style="float: right">
+    Saved: {{(goals.totalBalance() / 100) | currency}}
+  </div>
+
+  <hr />
+
+  <app-goal-list
+    [goals]="budget.goals"
+  ></app-goal-list>
+</div>

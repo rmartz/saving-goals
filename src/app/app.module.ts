@@ -10,10 +10,12 @@ import { EditGoalItemComponent } from './edit-goal-item/edit-goal-item.component
 import { PurchaseGoalItemComponent } from './purchase-goal-item/purchase-goal-item.component';
 import { GoalListItemComponent } from './goal-list-item/goal-list-item.component';
 import { ActionConfirmComponent } from './action-confirm/action-confirm.component';
+import { BudgetDisplayComponent } from './budget-display/budget-display.component';
 
 @NgModule({
   declarations: [
     ActionConfirmComponent,
+    BudgetDisplayComponent,
     GoalListComponent,
     GoalListItemComponent,
     EditGoalItemComponent,

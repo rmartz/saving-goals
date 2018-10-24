@@ -5,10 +5,11 @@ import { map } from 'rxjs/operators';
 import { Goal } from '../models/goal.model';
 import { roundRandom } from '../utils/round';
 import { swapItems } from '../utils/ordering';
+import { Budget } from '../models/budget.model';
 
 @Injectable()
 export class Goals {
-  private _goals: Goal[] = [];
+  public budget = new Budget();
   private _list = new BehaviorSubject<Goal[]>([]);
 
   constructor() {
@@ -24,8 +25,8 @@ export class Goals {
   }
 
   public save(goal: Goal): void {
-    if (!this._goals.includes(goal)) {
-      this._goals.push(goal);
+    if (!this.budget.goals.includes(goal)) {
+      this.budget.goals.push(goal);
     }
     if (goal.current > goal.target) {
       const difference = goal.current - goal.target;
@@ -64,8 +65,8 @@ export class Goals {
   }
 
   private saveGoals() {
-    localStorage.setItem('goals', JSON.stringify(this._goals));
-    this._list.next(this._goals);
+    localStorage.setItem('goals', JSON.stringify(this.budget.goals));
+    this._list.next(this.budget.goals);
   }
 
   public disperse(total: number) {
@@ -73,7 +74,7 @@ export class Goals {
       // No value to contribute
       return;
     }
-    const activeGoals = this._goals.filter(goal => goal.isActive());
+    const activeGoals = this.budget.goals.filter(goal => goal.isActive());
     if (activeGoals.length === 0) {
       // There are no unfunded goals to contribute to
       return;
@@ -117,25 +118,25 @@ export class Goals {
   }
 
   public delete(goal: Goal) {
-    this._goals = this._goals.filter(element => element !== goal);
+    this.budget.goals = this.budget.goals.filter(element => element !== goal);
     this.disperse(goal.current);
   }
 
   public moveUp(goal: Goal) {
-    const index = this._goals.indexOf(goal);
+    const index = this.budget.goals.indexOf(goal);
     if (index <= 0) {
       return;
     }
-    swapItems(this._goals, index, index - 1);
+    swapItems(this.budget.goals, index, index - 1);
     this.saveGoals();
   }
 
   public moveDown(goal: Goal) {
-    const index = this._goals.indexOf(goal);
-    if (index < 0 || index + 1 >= this._goals.length) {
+    const index = this.budget.goals.indexOf(goal);
+    if (index < 0 || index + 1 >= this.budget.goals.length) {
       return;
     }
-    swapItems(this._goals, index, index + 1);
+    swapItems(this.budget.goals, index, index + 1);
     this.saveGoals();
   }
 }

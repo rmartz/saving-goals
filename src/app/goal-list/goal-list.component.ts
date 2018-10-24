@@ -1,17 +1,15 @@
-import { Component } from '@angular/core';
-import { Goals } from '../shared/services/goals.service';
+import { Component, Input } from '@angular/core';
+import { Goal } from '../shared/models/goal.model';
 
 @Component({
   selector: 'app-goal-list',
   templateUrl: './goal-list.component.html'
 })
 export class GoalListComponent {
-  constructor(public goals: Goals) { }
+  @Input()
+  public goals: Goal[];
+
+  constructor() { }
 
   public createMode = false;
-
-  public disperse(amount: number) {
-    const amountCents = Math.round(amount * 100);
-    this.goals.disperse(amountCents);
-  }
 }

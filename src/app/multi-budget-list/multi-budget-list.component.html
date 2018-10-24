@@ -1,0 +1,14 @@
+<ul>
+  <li *ngFor="let budget of budgets.list() | async">
+    <app-budget-display
+      [budget]="budget">
+    </app-budget-display>
+  </li>
+  <li>
+    <button
+      (click)="create()">
+      Create new Budget
+    </button>
+  </li>
+</ul>
+

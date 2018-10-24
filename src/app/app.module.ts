@@ -11,6 +11,8 @@ import { PurchaseGoalItemComponent } from './purchase-goal-item/purchase-goal-it
 import { GoalListItemComponent } from './goal-list-item/goal-list-item.component';
 import { ActionConfirmComponent } from './action-confirm/action-confirm.component';
 import { BudgetDisplayComponent } from './budget-display/budget-display.component';
+import { MultiBudgetListComponent } from './multi-budget-list/multi-budget-list.component';
+import { Budgets } from './shared/services/budgets.service';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,7 @@ import { BudgetDisplayComponent } from './budget-display/budget-display.componen
     GoalListItemComponent,
     EditGoalItemComponent,
     PurchaseGoalItemComponent,
+    MultiBudgetListComponent,
     AppComponent
   ],
   imports: [
@@ -28,7 +31,8 @@ import { BudgetDisplayComponent } from './budget-display/budget-display.componen
     MatProgressBarModule
   ],
   providers: [
-    Goals
+    Goals,
+    Budgets
   ],
   bootstrap: [AppComponent]
 })

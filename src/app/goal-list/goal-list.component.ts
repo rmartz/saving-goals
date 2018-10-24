@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Goal } from '../shared/models/goal.model';
+import { Budget } from '../shared/models/budget.model';
 
 @Component({
   selector: 'app-goal-list',
@@ -7,7 +7,7 @@ import { Goal } from '../shared/models/goal.model';
 })
 export class GoalListComponent {
   @Input()
-  public goals: Goal[];
+  public budget: Budget;
 
   constructor() { }
 

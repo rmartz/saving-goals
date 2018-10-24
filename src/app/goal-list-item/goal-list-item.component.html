@@ -2,13 +2,13 @@
   <div class="goal-insert">
     <a
       class="link"
-      (click)="goals.moveUp(goal)">
+      (click)="moveUp()">
       &#8679;
     </a>
     <hr>
     <a
       class="link"
-      (click)="goals.moveDown(goal)">
+      (click)="moveDown()">
       &#8681;
     </a>
   </div>
@@ -16,7 +16,7 @@
   <div class="goal-item"
     [ngClass]="{'goal-item-complete': goal.isComplete(),
                 'goal-item-overdrawn': goal.isOverdrawn(),
-                'goal-item-affordable': (goals.checkBalance(goal) | async) && !goal.isOverdrawn()}">
+                'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
 
 
 
@@ -38,7 +38,7 @@
       [value]="100 * goal.current / goal.target">
     </mat-progress-bar>
 
-    <p *ngIf="goal.isComplete() && !(goals.checkBalance(goal) | async)">
+    <p *ngIf="goal.isComplete() && !goal.budget.checkBalance(goal)">
       Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
     </p>
 

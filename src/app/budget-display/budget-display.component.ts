@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { Goals } from '../shared/services/goals.service';
+import { Component, Input } from '@angular/core';
 import { Budget } from '../shared/models/budget.model';
+import { Budgets } from '../shared/services/budgets.service';
 
 @Component({
   selector: 'app-budget-display',
   templateUrl: './budget-display.component.html'
 })
-export class BudgetDisplayComponent implements OnInit {
+export class BudgetDisplayComponent {
 
+  @Input()
   public budget: Budget;
 
-  constructor(private goals: Goals) { }
+  constructor(private budgets: Budgets) { }
 
-  ngOnInit() {
-    this.budget = this.goals.budget;
+  public disperse(amount: number) {
+    const amountCents = Math.round(amount * 100);
+    this.budget.disperse(amountCents);
+    this.budgets.save(this.budget);
   }
 }

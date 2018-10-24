@@ -1,3 +1,5 @@
+import { Budget } from './budget.model';
+
 export class Goal {
   constructor() {
     this.current = 0;
@@ -11,7 +13,35 @@ export class Goal {
   created: Date;
   purchased: Date;
   closed: Date;
+  budget: Budget;
 
+  public toJSON() {
+    return {
+     label: this.label,
+     target: this.target,
+     current: this.current,
+     created: this.created,
+     purchased: this.purchased,
+     closed: this.closed
+    };
+  }
+
+
+  public save(): void {
+    if (!this.budget.goals.includes(this)) {
+      this.budget.goals.push(this);
+    }
+    if (this.current > this.target) {
+      const difference = this.current - this.target;
+      this.current -= difference;
+      this.budget.disperse(difference);
+    }
+  }
+
+  public purchase(cost: number) {
+    this.target = cost;
+    this.purchased = new Date();
+  }
 
   public isFunded(): boolean {
     return this.current >= this.target;

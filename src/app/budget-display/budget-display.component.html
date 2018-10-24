@@ -1,15 +1,16 @@
 <div class="budget-display">
+  <h1>{{budget.label}}</h1>
   <input type="number" #disperseAmount>
   <button (click)="disperse(disperseAmount.value); disperseAmount.value = ''">
     Disperse
   </button>
   <div style="float: right">
-    Saved: {{(goals.totalBalance() / 100) | currency}}
+    Saved: {{(budget.totalBalance() / 100) | currency}}
   </div>
 
   <hr />
 
   <app-goal-list
-    [goals]="budget.goals"
+    [budget]="budget"
   ></app-goal-list>
 </div>

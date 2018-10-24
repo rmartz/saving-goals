@@ -15,12 +15,13 @@
             [value]="0">
           </mat-progress-bar>
           <app-edit-goal-item
+            [budget]="budget"
             (close)="createMode = false">
           </app-edit-goal-item>
         </div>
       </div>
     </li>
-    <li *ngFor="let goal of goals">
+    <li *ngFor="let goal of budget.goals">
       <app-goal-list-item
         [goal]="goal">
       </app-goal-list-item>

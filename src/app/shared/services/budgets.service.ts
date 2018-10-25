@@ -23,11 +23,11 @@ export class Budgets {
           Object.assign(goal, goalJson);
           budget.goals.push(goal);
         }
-        for (const goalJson of budgetJson['purchased']) {
+        for (const goalJson of budgetJson['archived'] || []) {
           const goal = new Goal();
           goal.budget = budget;
           Object.assign(goal, goalJson);
-          budget.purchased.push(goal);
+          budget.archived.push(goal);
         }
 
         this._budgets.push(budget);

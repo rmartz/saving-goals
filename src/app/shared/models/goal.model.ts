@@ -28,11 +28,8 @@ export class Goal {
   }
 
   public save(): void {
-    if (!this.isComplete()) {
+    if (!this.isPurchased()) {
       setMembership(this.budget.goals, this, true);
-    } else {
-      setMembership(this.budget.goals, this, false);
-      setMembership(this.budget.purchased, this, true);
     }
     if (this.current > this.target) {
       const difference = this.current - this.target;
@@ -60,17 +57,8 @@ export class Goal {
   }
 
   public isComplete(): boolean {
-    // A goal is complete if it has been fully funded but not yet purchased.
-    return !this.isPurchased() && this.isFunded();
-  }
-
-  public isHidden(): boolean {
-    // Goals are hidden once they are purchased and fully funded
+    // A goal is complete if it has been fully funded and purchased.
     return this.isPurchased() && this.isFunded();
-  }
-
-  public isVisible(): boolean {
-    return !this.isHidden();
   }
 
   public isOverdrawn(): boolean {

@@ -38,6 +38,20 @@
   </div>
 </form>
 
+<p>
+  Created: {{goal.created | date}}
+</p>
+<p *ngIf="goal.isPurchased()">
+  Purchased: {{goal.purchased | date}}
+
+  <app-action-confirm
+    [displayClass]="'button-negative inline'"
+    (confirmed)="goal.purchased = undefined"
+    prompt="Un-purchase">
+  </app-action-confirm>
+
+</p>
+
 <app-action-confirm
   *ngIf="(goal !== undefined) && !goal.isPurchased()"
   [displayClass]="'button-negative'"

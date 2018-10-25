@@ -13,6 +13,10 @@ h1, h2 {
   display: inline-block;
 }
 
+.inherit {
+  display: inherit;
+}
+
 .link {
   cursor: pointer;
 }
@@ -79,7 +83,7 @@ ul.budget-list {
   flex-grow: 1;
 }
 
-.goal-item-complete {
+.goal-item-funded {
   background-color: #fff48c;
 }
 
@@ -91,6 +95,11 @@ ul.budget-list {
   background-color: #e0dff0;
 }
 
-.goal-item-affordable.goal-item-complete {
+.goal-item.goal-item-funded.goal-item-complete {
+  background-color: #a1fda1;
+  color: #707070;
+}
+
+.goal-item-affordable.goal-item-funded {
   background-color: #79ff79;
 }

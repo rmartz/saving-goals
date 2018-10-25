@@ -1,17 +1,18 @@
 import { Goal } from './goal.model';
 import { swapItems } from '../utils/ordering';
 import { roundRandom } from '../utils/round';
+import { setMembership } from '../utils/membership';
 
 export class Budget {
   label: string;
   goals: Goal[] = [];
-  purchased: Goal[] = [];
+  archived: Goal[] = [];
 
   public toJSON() {
     return {
       label: this.label,
       goals: this.goals.map(goal => goal.toJSON()),
-      purchased: this.purchased.map(goal => goal.toJSON())
+      archived: this.archived.map(goal => goal.toJSON())
     };
   }
 
@@ -47,6 +48,11 @@ export class Budget {
     swapItems(this.goals, index, index + 1);
   }
 
+  public archive(goal: Goal) {
+    setMembership(this.goals, goal, false);
+    setMembership(this.archived, goal, true);
+  }
+
   public disperse(total: number) {
     if (total <= 0) {
       // No value to contribute
@@ -72,10 +78,6 @@ export class Budget {
       const value = Math.min(target, remainder, goal.target - goal.current);
       remainder -= value;
       goal.current += value;
-      if (goal.current === goal.target && goal.isPurchased()) {
-        // The save() method has logic in it to place the goal in the right list
-        goal.save();
-      }
     }
 
     if (remainder > 0) {

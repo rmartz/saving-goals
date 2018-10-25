@@ -15,6 +15,7 @@
 
   <div class="goal-item"
     [ngClass]="{'goal-item-complete': goal.isComplete(),
+                'goal-item-funded': goal.isFunded(),
                 'goal-item-overdrawn': goal.isOverdrawn(),
                 'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
 
@@ -31,6 +32,13 @@
         (click)="purchaseMode = !purchaseMode; editMode = false">
         Purchase
       </button>
+      <app-action-confirm
+        *ngIf="goal.isComplete()"
+        class="inherit"
+        [displayClass]="'button-negative'"
+        (confirmed)="goal.budget.archive(goal); budgets.save(goal.budget)"
+        prompt="Archive">
+      </app-action-confirm>
       <button (click)="editMode = !editMode; purchaseMode = false">Edit</button>
     </div>
     <mat-progress-bar
@@ -38,7 +46,7 @@
       [value]="100 * goal.current / goal.target">
     </mat-progress-bar>
 
-    <p *ngIf="goal.isComplete() && !goal.budget.checkBalance(goal)">
+    <p *ngIf="goal.isFunded() && !goal.budget.checkBalance(goal)">
       Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
     </p>
 

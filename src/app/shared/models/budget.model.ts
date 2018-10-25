@@ -72,6 +72,10 @@ export class Budget {
       const value = Math.min(target, remainder, goal.target - goal.current);
       remainder -= value;
       goal.current += value;
+      if (goal.current === goal.target && goal.isPurchased()) {
+        // The save() method has logic in it to place the goal in the right list
+        goal.save();
+      }
     }
 
     if (remainder > 0) {

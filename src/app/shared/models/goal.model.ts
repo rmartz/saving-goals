@@ -1,4 +1,5 @@
 import { Budget } from './budget.model';
+import { setMembership } from '../utils/membership';
 
 export class Goal {
   constructor() {
@@ -26,10 +27,12 @@ export class Goal {
     };
   }
 
-
   public save(): void {
-    if (!this.budget.goals.includes(this)) {
-      this.budget.goals.push(this);
+    if (!this.isComplete()) {
+      setMembership(this.budget.goals, this, true);
+    } else {
+      setMembership(this.budget.goals, this, false);
+      setMembership(this.budget.purchased, this, true);
     }
     if (this.current > this.target) {
       const difference = this.current - this.target;

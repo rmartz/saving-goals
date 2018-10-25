@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Goal } from '../shared/models/goal.model';
-import { Goals } from '../shared/services/goals.service';
+import { Budgets } from '../shared/services/budgets.service';
 
 @Component({
   selector: 'app-goal-list-item',
@@ -13,5 +13,15 @@ export class GoalListItemComponent {
   public editMode: boolean;
   public purchaseMode: boolean;
 
-  constructor(public goals: Goals) { }
+  constructor(public budgets: Budgets) { }
+
+  public moveUp() {
+    this.goal.budget.moveUp(this.goal);
+    this.budgets.save(this.goal.budget);
+  }
+
+  public moveDown() {
+    this.goal.budget.moveDown(this.goal);
+    this.budgets.save(this.goal.budget);
+  }
 }

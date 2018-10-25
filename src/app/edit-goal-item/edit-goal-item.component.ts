@@ -1,12 +1,17 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Goals } from '../shared/services/goals.service';
 import { Goal } from '../shared/models/goal.model';
+import { Budgets } from '../shared/services/budgets.service';
+import { Budget } from '../shared/models/budget.model';
 
 @Component({
   selector: 'app-edit-goal-item',
   templateUrl: './edit-goal-item.component.html'
 })
 export class EditGoalItemComponent implements OnInit {
+
+  @Input()
+  public budget: Budget;
 
   @Input()
   public goal: Goal;
@@ -17,7 +22,7 @@ export class EditGoalItemComponent implements OnInit {
   public name: string;
   public target: number;
 
-  constructor(private goals: Goals) { }
+  constructor(private budgets: Budgets) { }
 
   public ngOnInit() {
     if (this.goal !== undefined) {
@@ -27,15 +32,16 @@ export class EditGoalItemComponent implements OnInit {
   }
 
   public save() {
-    let goal = this.goal;
-    if (goal === undefined) {
-      goal = new Goal();
+    const goal = this.goal || new Goal();
+    if (this.goal === undefined) {
+      goal.budget = this.budget;
     }
     goal.label = this.name;
     goal.target = Math.round(this.target * 100);
+    goal.save();
 
-    this.goals.save(goal);
-    this.close.emit(this.goal);
+    this.budgets.save(goal.budget);
+    this.close.emit(goal);
   }
 
   public cancel($event) {
@@ -44,6 +50,6 @@ export class EditGoalItemComponent implements OnInit {
   }
 
   public delete() {
-    this.goals.delete(this.goal);
+    this.goal.budget.delete(this.goal);
   }
 }

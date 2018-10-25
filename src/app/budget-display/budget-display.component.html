@@ -1,0 +1,31 @@
+<div class="budget-display">
+  <div *ngIf="!renameMode">
+    <h1 class="header inline">{{budget.label}}</h1>
+    <button (click)="renameMode = true">Rename</button>
+  </div>
+  <div *ngIf="renameMode">
+    <input
+      class="header"
+      type="text"
+      placeholder="Budget name"
+      [(ngModel)]="budgetLabel">
+    <button (click)="rename()">Rename</button>
+    <button (click)="renameMode = false">Cancel</button>
+  </div>
+
+  <hr />
+
+  <input type="number" #disperseAmount>
+  <button (click)="disperse(disperseAmount.value); disperseAmount.value = ''">
+    Disperse
+  </button>
+  <div style="float: right">
+    Saved: {{(budget.totalBalance() / 100) | currency}}
+  </div>
+
+  <hr />
+
+  <app-goal-list
+    [budget]="budget"
+  ></app-goal-list>
+</div>

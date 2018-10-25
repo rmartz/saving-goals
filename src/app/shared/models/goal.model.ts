@@ -1,3 +1,6 @@
+import { Budget } from './budget.model';
+import { setMembership } from '../utils/membership';
+
 export class Goal {
   constructor() {
     this.current = 0;
@@ -11,7 +14,37 @@ export class Goal {
   created: Date;
   purchased: Date;
   closed: Date;
+  budget: Budget;
 
+  public toJSON() {
+    return {
+     label: this.label,
+     target: this.target,
+     current: this.current,
+     created: this.created,
+     purchased: this.purchased,
+     closed: this.closed
+    };
+  }
+
+  public save(): void {
+    if (!this.isComplete()) {
+      setMembership(this.budget.goals, this, true);
+    } else {
+      setMembership(this.budget.goals, this, false);
+      setMembership(this.budget.purchased, this, true);
+    }
+    if (this.current > this.target) {
+      const difference = this.current - this.target;
+      this.current -= difference;
+      this.budget.disperse(difference);
+    }
+  }
+
+  public purchase(cost: number) {
+    this.target = cost;
+    this.purchased = new Date();
+  }
 
   public isFunded(): boolean {
     return this.current >= this.target;
@@ -28,7 +61,7 @@ export class Goal {
 
   public isComplete(): boolean {
     // A goal is complete if it has been fully funded but not yet purchased.
-    return this.isPurchased() && this.isFunded();
+    return !this.isPurchased() && this.isFunded();
   }
 
   public isHidden(): boolean {

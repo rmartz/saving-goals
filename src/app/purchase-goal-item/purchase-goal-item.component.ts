@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Goals } from '../shared/services/goals.service';
 import { Goal } from '../shared/models/goal.model';
+import { Goals } from '../shared/services/goals.service';
+import { Budget } from '../shared/models/budget.model';
+import { Budgets } from '../shared/services/budgets.service';
 
 @Component({
   selector: 'app-purchase-goal-item',
@@ -16,7 +18,7 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public cost: number;
 
-  constructor(public goals: Goals) { }
+  constructor(private budgets: Budgets) { }
 
   public ngOnInit() {
     this.cost = parseFloat((this.goal.target / 100).toFixed(2));
@@ -24,7 +26,9 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public save() {
     const costCents = Math.round(this.cost * 100);
-    this.goals.purchase(this.goal, costCents);
+    this.goal.purchase(costCents);
+    this.goal.save();
+    this.budgets.save(this.goal.budget);
     this.close.emit(this.goal);
   }
 }

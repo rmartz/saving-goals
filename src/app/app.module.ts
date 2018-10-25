@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AppComponent } from './app.component';
-import { Goals } from './shared/services/goals.service';
 import { GoalListComponent } from './goal-list/goal-list.component';
 import { EditGoalItemComponent } from './edit-goal-item/edit-goal-item.component';
 import { PurchaseGoalItemComponent } from './purchase-goal-item/purchase-goal-item.component';
@@ -31,7 +30,6 @@ import { Budgets } from './shared/services/budgets.service';
     MatProgressBarModule
   ],
   providers: [
-    Goals,
     Budgets
   ],
   bootstrap: [AppComponent]

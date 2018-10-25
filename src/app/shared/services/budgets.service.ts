@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Budget } from '../models/budget.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Goal } from '../models/goal.model';
-import { Goals } from './goals.service';
 
 @Injectable()
 export class Budgets {
@@ -10,7 +9,7 @@ export class Budgets {
   private _budgets: Budget[] = [];
   private _list = new BehaviorSubject<Budget[]>([]);
 
-  constructor(private goals: Goals) {
+  constructor() {
     const savedState = localStorage.getItem('budgets');
     if (savedState !== null) {
       const savedBudgets = JSON.parse(savedState);

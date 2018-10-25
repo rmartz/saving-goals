@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Goals } from '../shared/services/goals.service';
 import { Goal } from '../shared/models/goal.model';
 import { Budgets } from '../shared/services/budgets.service';
 import { Budget } from '../shared/models/budget.model';

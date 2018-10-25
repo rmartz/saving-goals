@@ -61,7 +61,7 @@ export class Goal {
 
   public isComplete(): boolean {
     // A goal is complete if it has been fully funded but not yet purchased.
-    return this.isPurchased() && this.isFunded();
+    return !this.isPurchased() && this.isFunded();
   }
 
   public isHidden(): boolean {

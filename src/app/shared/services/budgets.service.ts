@@ -21,41 +21,48 @@ export class Budgets {
     const savedState = localStorage.getItem('budgets');
     this.processJsonSaveState(savedState);
 
-    this.budgetCollection = afs.collection<Budget>('budgets');
+    const newUserObs = afAuth.user.pipe(
+      tap(user => {
+        if (user !== null) {
+          this.budgetCollection = afs.collection<Budget>('budgets', ref => ref.where('owner', '==', user.uid));
+        }
+      })
+    );
 
-    this._list = afAuth.user.pipe(
+    newUserObs.subscribe(user => {
+      if (user === null) {
+        // Remove budgets that have an assigned ID - local storage only items won't have one
+        // This avoids clearing local storage items on initial load
+        this._budgets = this._budgets.filter(budget => budget.id === undefined);
+        this.saveBudgetsLocalStorage();
+      } else {
+        // Check if the user has budgets configured... if not, save their local budgets remotely
+        this.budgetCollection.valueChanges().pipe(
+          first(),
+          tap(budgets => {
+            if (budgets.length === 0) {
+              // There are no budgets saved remotely... copy over any local budgets
+              console.log('Creating remote copy of local budgets');
+              this._budgets.forEach(budget => this.save(budget));
+            }
+          })
+        ).subscribe();
+      }
+    });
+
+    this._list = newUserObs.pipe(
       switchMap(user => {
-        console.log(user);
         if (user === null) {
           // We are not logged in to Firebase, so use our BehaviorSubject for Budget management
-          // Remove budgets that have an assigned ID - local storage only items won't have one
-          // This avoids clearing local storage items on initial load
-          this._budgets = this._budgets.filter(budget => budget.id === undefined);
-          console.log(this._budgets);
-          this.saveBudgetsLocalStorage();
+
           return this._listBS.asObservable();
         } else {
-          // Check if the user has budgets configured... if not, save their local budgets remotely
-          this.budgetCollection.valueChanges().pipe(
-            first(),
-            tap(budgets => {
-              console.log(this._budgets);
-              if (budgets.length === 0) {
-                // There are no budgets saved remotely... copy over any local budgets
-                console.log('Creating remote copy of local budgets');
-                this._budgets.forEach(budget => this.save(budget));
-              }
-            })
-          ).subscribe();
-
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
             map(budgets => {
               return budgets.map(budget =>  Budget.fromJSON(budget));
             }),
             tap(budgets => {
-              console.log(this._budgets);
-              console.log(budgets);
               if (budgets.length > 0) {
                 this._budgets = budgets;
               }
@@ -112,9 +119,7 @@ export class Budgets {
           budget.id = this.afs.createId();
           console.log('Created new ID for budget', budget);
         }
-        const data: object = budget.toJSON();
-        console.log(data);
-        this.budgetCollection.doc(budget.id).set(data);
+        this.budgetCollection.doc(budget.id).set(budget.toJSON());
       }
     });
   }

@@ -2,6 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 import { AppComponent } from './app.component';
 import { GoalListComponent } from './goal-list/goal-list.component';
@@ -12,6 +15,8 @@ import { ActionConfirmComponent } from './action-confirm/action-confirm.componen
 import { BudgetDisplayComponent } from './budget-display/budget-display.component';
 import { MultiBudgetListComponent } from './multi-budget-list/multi-budget-list.component';
 import { Budgets } from './shared/services/budgets.service';
+import { environment } from '../environments/environment';
+import { UserLoginComponent } from './user-login/user-login.component';
 
 @NgModule({
   declarations: [
@@ -22,12 +27,16 @@ import { Budgets } from './shared/services/budgets.service';
     EditGoalItemComponent,
     PurchaseGoalItemComponent,
     MultiBudgetListComponent,
+    UserLoginComponent,
     AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFireStorageModule
   ],
   providers: [
     Budgets

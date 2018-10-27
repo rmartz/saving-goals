@@ -17,4 +17,10 @@ export class MultiBudgetListComponent {
     this.newBudgetName = '';
     this.createMode = false;
   }
+
+  public cancel($event) {
+    $event.preventDefault();
+    this.newBudgetName = '';
+    this.createMode = false;
+  }
 }

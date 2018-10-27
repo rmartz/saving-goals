@@ -1,16 +1,45 @@
-import { Goal } from './goal.model';
+import { Goal, IGoal } from './goal.model';
 import { swapItems } from '../utils/ordering';
 import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
-export class Budget {
+export interface IBudget {
+  id: string;
   label: string;
+  owner: string;
+  goals: IGoal[];
+  archived: IGoal[];
+}
+
+export class Budget implements IBudget {
+  id: string;
+  label: string;
+  owner: string;
   goals: Goal[] = [];
   archived: Goal[] = [];
 
-  public toJSON() {
+  public static fromJSON(json: IBudget): Budget {
+    const budget = new Budget();
+    budget.label = json['label'];
+    budget.owner = json['owner'];
+    budget.id = json['id'];
+
+    for (const goalJson of json['goals']) {
+      const goal = Goal.fromJSON(budget, goalJson);
+      budget.goals.push(goal);
+    }
+    for (const goalJson of json['archived'] || []) {
+      const goal = Goal.fromJSON(budget, goalJson);
+      budget.archived.push(goal);
+    }
+    return budget;
+  }
+
+  public toJSON(): IBudget {
     return {
       label: this.label,
+      owner: this.owner,
+      id: this.id,
       goals: this.goals.map(goal => goal.toJSON()),
       archived: this.archived.map(goal => goal.toJSON())
     };

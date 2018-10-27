@@ -1,12 +1,17 @@
 import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
 
-export class Goal {
-  constructor() {
-    this.current = 0;
-    this.created = new Date();
-  }
+export interface IGoal {
+  label: string;
+  target: number;
+  current: number;
 
+  created: Date;
+  purchased?: Date;
+  closed?: Date;
+}
+
+export class Goal implements IGoal {
   label: string;
   target: number;
   current: number;
@@ -16,15 +21,32 @@ export class Goal {
   closed: Date;
   budget: Budget;
 
-  public toJSON() {
-    return {
+  public static fromJSON(budget: Budget, json: IGoal) {
+    const goal = new Goal();
+    goal.budget = budget;
+    Object.assign(goal, json);
+    return goal;
+  }
+
+  constructor() {
+    this.current = 0;
+    this.created = new Date();
+  }
+
+  public toJSON(): IGoal {
+    const data: IGoal = {
      label: this.label,
      target: this.target,
      current: this.current,
-     created: this.created,
-     purchased: this.purchased,
-     closed: this.closed
+     created: this.created
     };
+    if (this.purchased !== undefined) {
+      data['purchased'] = this.purchased;
+    }
+    if (this.closed !== undefined) {
+      data['closed'] = this.closed;
+    }
+    return data;
   }
 
   public save(): void {

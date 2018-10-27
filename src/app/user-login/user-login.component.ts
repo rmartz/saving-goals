@@ -7,11 +7,12 @@ import { auth } from 'firebase/app';
   templateUrl: './user-login.component.html'
 })
 export class UserLoginComponent {
-  constructor(public afAuth: AngularFireAuth) {
-  }
+  constructor(public afAuth: AngularFireAuth) {  }
+
   login() {
     this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
   }
+
   logout() {
     this.afAuth.auth.signOut();
   }

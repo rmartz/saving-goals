@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Budget } from '../models/budget.model';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Goal } from '../models/goal.model';
+import { map, tap, switchMap, first } from 'rxjs/operators';
+
+import { Budget, IBudget } from '../models/budget.model';
 import { setMembership } from '../utils/membership';
 import { swapItems } from '../utils/ordering';
 
@@ -9,61 +12,115 @@ import { swapItems } from '../utils/ordering';
 export class Budgets {
 
   private _budgets: Budget[] = [];
-  private _list = new BehaviorSubject<Budget[]>([]);
+  private budgetCollection: AngularFirestoreCollection<IBudget>;
+  private _listBS = new BehaviorSubject<Budget[]>([]);
+  private _list: Observable<Budget[]>;
 
-  constructor() {
+  constructor(private afAuth: AngularFireAuth,
+              private readonly afs: AngularFirestore) {
     const savedState = localStorage.getItem('budgets');
-    if (savedState !== null) {
-      const savedBudgets = JSON.parse(savedState);
-      for (const budgetJson of savedBudgets) {
-        const budget = new Budget();
-        budget.label = budgetJson['label'];
+    this.processJsonSaveState(savedState);
 
-        for (const goalJson of budgetJson['goals']) {
-          const goal = new Goal();
-          goal.budget = budget;
-          Object.assign(goal, goalJson);
-          budget.goals.push(goal);
+    this.budgetCollection = afs.collection<Budget>('budgets');
+
+    this._list = afAuth.user.pipe(
+      switchMap(user => {
+        console.log(user);
+        if (user === null) {
+          // We are not logged in to Firebase, so use our BehaviorSubject for Budget management
+          // Remove budgets that have an assigned ID - local storage only items won't have one
+          // This avoids clearing local storage items on initial load
+          this._budgets = this._budgets.filter(budget => budget.id === undefined);
+          console.log(this._budgets);
+          this.saveBudgetsLocalStorage();
+          return this._listBS.asObservable();
+        } else {
+          // Check if the user has budgets configured... if not, save their local budgets remotely
+          this.budgetCollection.valueChanges().pipe(
+            first(),
+            tap(budgets => {
+              console.log(this._budgets);
+              if (budgets.length === 0) {
+                // There are no budgets saved remotely... copy over any local budgets
+                console.log('Creating remote copy of local budgets');
+                this._budgets.forEach(budget => this.save(budget));
+              }
+            })
+          ).subscribe();
+
+          // Subscribe to the remote budgets for local management
+          return this.budgetCollection.valueChanges().pipe(
+            map(budgets => {
+              return budgets.map(budget =>  Budget.fromJSON(budget));
+            }),
+            tap(budgets => {
+              console.log(this._budgets);
+              console.log(budgets);
+              if (budgets.length > 0) {
+                this._budgets = budgets;
+              }
+            })
+          );
         }
-        for (const goalJson of budgetJson['archived'] || []) {
-          const goal = new Goal();
-          goal.budget = budget;
-          Object.assign(goal, goalJson);
-          budget.archived.push(goal);
-        }
-
-        this._budgets.push(budget);
-      }
-
-      this._list.next(this._budgets);
-    }
+      })
+    );
   }
 
   public create(label: string) {
     const budget = new Budget();
     budget.label = label;
     this._budgets.push(budget);
-    this.saveBudgets();
+    this.save(budget);
   }
 
   public delete(budget: Budget) {
     setMembership(this._budgets, budget, false);
-    this.saveBudgets();
+
+    this.afAuth.user.pipe(
+      tap(user => {
+        if (user === null) {
+          this.saveBudgetsLocalStorage();
+        } else {
+          if (budget.id === undefined) {
+            console.error('Attempted to delete budget without an ID');
+          } else {
+            this.budgetCollection.doc(budget.id).delete();
+          }
+        }
+      })
+    );
   }
 
-  private saveBudgets() {
+  private saveBudgetsLocalStorage() {
     localStorage.setItem('budgets', JSON.stringify(
       this._budgets.map(budget => budget.toJSON())
     ));
-    this._list.next(this._budgets);
+    this._listBS.next(this._budgets);
   }
 
   public save(budget: Budget) {
-    this.saveBudgets();
+    this.afAuth.user.pipe(
+      first()
+    ).subscribe(user => {
+      if (user === null) {
+        // We are not logged in, save to local storage
+        console.log('User is not signed in, saving to local storage', budget);
+        this.saveBudgetsLocalStorage();
+      } else {
+        budget.owner = user.uid;
+        if (budget.id === undefined) {
+          budget.id = this.afs.createId();
+          console.log('Created new ID for budget', budget);
+        }
+        const data: object = budget.toJSON();
+        console.log(data);
+        this.budgetCollection.doc(budget.id).set(data);
+      }
+    });
   }
 
   public list(): Observable<Budget[]> {
-    return this._list.asObservable();
+    return this._list;
   }
 
   public moveUp(budget: Budget) {
@@ -72,7 +129,7 @@ export class Budgets {
       return;
     }
     swapItems(this._budgets, index, index - 1);
-    this.saveBudgets();
+    this.saveBudgetsLocalStorage();
   }
 
   public moveDown(budget: Budget) {
@@ -81,6 +138,18 @@ export class Budgets {
       return;
     }
     swapItems(this._budgets, index, index + 1);
-    this.saveBudgets();
+    this.saveBudgetsLocalStorage();
+  }
+
+  private processJsonSaveState(json: string) {
+    if (json !== null) {
+      const savedBudgets = JSON.parse(json);
+      for (const budgetJson of savedBudgets) {
+        const budget = Budget.fromJSON(budgetJson);
+        this._budgets.push(budget);
+      }
+
+      this._listBS.next(this._budgets);
+    }
   }
 }

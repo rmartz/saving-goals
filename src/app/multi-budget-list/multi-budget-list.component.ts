@@ -6,9 +6,15 @@ import { Budgets } from '../shared/services/budgets.service';
   templateUrl: './multi-budget-list.component.html'
 })
 export class MultiBudgetListComponent {
+
+  public createMode = false;
+  public newBudgetName = '';
+
   constructor(public budgets: Budgets) { }
 
   public create() {
-    this.budgets.create('New Budget');
+    this.budgets.create(this.newBudgetName);
+    this.newBudgetName = '';
+    this.createMode = false;
   }
 }

@@ -1,6 +1,6 @@
 <div class="goal-list">
-  <div class="new-goal-item-create" *ngIf="!createMode">
-    <button (click)="createMode = !createMode">Add goal +</button>
+  <div *ngIf="!createMode">
+    <button class="header-2" (click)="createMode = !createMode">Add goal +</button>
   </div>
 
   <ul>

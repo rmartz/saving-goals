@@ -1,10 +1,10 @@
 <ul class="budget-list">
-  <li *ngFor="let budget of budgets.list() | async">
+  <li class="budget-column" *ngFor="let budget of budgets.list() | async">
     <app-budget-display
       [budget]="budget">
     </app-budget-display>
   </li>
-  <li>
+  <li class="budget-column create-budget-column">
     <button
       (click)="create()">
       Create new Budget

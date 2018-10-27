@@ -38,7 +38,7 @@
   </div>
 </form>
 
-<p>
+<p *ngIf="goal.created !== undefined">
   Created: {{goal.created | date}}
 </p>
 <p *ngIf="goal.isPurchased()">

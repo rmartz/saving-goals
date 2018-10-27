@@ -26,8 +26,32 @@ h1, h2 {
   font-weight: bold;
 }
 
+.header-2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 .button-negative {
   background-color: #f76f6f;
+}
+
+.columns {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
 }
 
 .goal-insert {
@@ -102,4 +126,15 @@ ul.budget-list {
 
 .goal-item-affordable.goal-item-funded {
   background-color: #79ff79;
+}
+
+.budget-column:not(:first-child) {
+  border-left: 1px solid #b0b0b0;
+}
+
+.create-budget-column {
+  min-width: 15rem;
+  padding-top: 4rem;
+  text-align: center;
+  background-color: #fafafa;
 }

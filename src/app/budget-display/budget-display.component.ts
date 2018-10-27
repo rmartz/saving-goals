@@ -11,7 +11,7 @@ export class BudgetDisplayComponent implements OnInit {
   @Input()
   public budget: Budget;
 
-  public renameMode = false;
+  public editMode = false;
   public budgetLabel: string;
 
   constructor(private budgets: Budgets) { }
@@ -25,10 +25,24 @@ export class BudgetDisplayComponent implements OnInit {
   public rename() {
     this.budget.label = this.budgetLabel;
     this.budgets.save(this.budget);
-    this.renameMode = false;
+    this.editMode = false;
   }
 
   public ngOnInit() {
     this.budgetLabel = this.budget.label;
+  }
+
+  public delete() {
+    this.budgets.delete(this.budget);
+  }
+
+  public moveLeft() {
+    // Since budgets are displayed left to right, moving left corresponds to moving "up"
+    this.budgets.moveUp(this.budget);
+  }
+
+  public moveRight() {
+    // Since budgets are displayed left to right, moving left corresponds to moving "down"
+    this.budgets.moveDown(this.budget);
   }
 }

@@ -1,16 +1,41 @@
 <div class="budget-display">
-  <div *ngIf="!renameMode">
+  <div *ngIf="!editMode">
     <h1 class="header inline">{{budget.label}}</h1>
-    <button (click)="renameMode = true">Rename</button>
+    <button (click)="editMode = true">Edit</button>
   </div>
-  <div *ngIf="renameMode">
+  <div *ngIf="editMode">
     <input
       class="header"
       type="text"
       placeholder="Budget name"
       [(ngModel)]="budgetLabel">
     <button (click)="rename()">Rename</button>
-    <button (click)="renameMode = false">Cancel</button>
+    <button (click)="editMode = false">Cancel</button>
+
+    <div class="columns">
+      <div class="column align-left">
+        <a
+          class="link"
+          (click)="moveLeft()">
+          &#8678;
+        </a>
+      </div>
+      <div class="column">
+        <app-action-confirm
+          [displayClass]="'button-negative'"
+          (confirmed)="delete()"
+          prompt="Delete budget">
+        </app-action-confirm>
+      </div>
+      <div class="column align-right">
+        <a
+          class="link"
+          (click)="moveRight()">
+          &#8680;
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <hr />

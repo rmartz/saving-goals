@@ -38,10 +38,10 @@
   </div>
 </form>
 
-<p *ngIf="goal.created !== undefined">
+<p *ngIf="goal && goal.created !== undefined">
   Created: {{goal.created | date}}
 </p>
-<p *ngIf="goal.isPurchased()">
+<p *ngIf="goal && goal.isPurchased()">
   Purchased: {{goal.purchased | date}}
 
   <app-action-confirm

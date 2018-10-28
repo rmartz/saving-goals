@@ -30,6 +30,11 @@ export class PurchaseGoalItemComponent implements OnInit {
     this.close.emit(this.goal);
   }
 
+  public cancel($event) {
+    $event.preventDefault();
+    this.close.emit(this.goal);
+  }
+
   public exceedTotalBalance(): boolean {
     // Return True if cost is greater than the total amount saved across all goals
     return this.cost * 100 > this.goal.budget.totalBalance();

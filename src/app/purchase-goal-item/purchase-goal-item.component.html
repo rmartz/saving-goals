@@ -1,8 +1,5 @@
 <form (ngSubmit)="save()"
   #goalEditForm="ngForm">
-
-
-
   <label for="goalCost">
     How much did it ultimately cost?
   </label>
@@ -19,6 +16,9 @@
     type="submit"
     [disabled] = "!goalEditForm.form.valid">
     Purchase
+  </button>
+  <button (click)="cancel($event)">
+    Cancel
   </button>
 
   <p *ngIf="exceedAccrued()">

@@ -29,17 +29,21 @@
       </p>
       <button
         *ngIf="!goal.isPurchased()"
-        (click)="purchaseMode = !purchaseMode; editMode = false">
+        [ngClass]="{'button-active': purchaseMode()}"
+        (click)="togglePurchaseMode()">
         Purchase
       </button>
-      <app-action-confirm
+      <button
         *ngIf="goal.isComplete()"
-        class="inherit"
-        [displayClass]="'button-negative'"
-        (confirmed)="goal.budget.archive(goal); budgets.save(goal.budget)"
-        prompt="Archive">
-      </app-action-confirm>
-      <button (click)="editMode = !editMode; purchaseMode = false">Edit</button>
+        [ngClass]="{'button-active': archiveMode()}"
+        (click)="toggleArchiveMode()">
+        Archive
+      </button>
+      <button
+        [ngClass]="{'button-active': editMode()}"
+        (click)="toggleEditMode()">
+        Edit
+      </button>
     </div>
     <mat-progress-bar
       *ngIf="!goal.isFunded()"
@@ -50,16 +54,30 @@
       Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
     </p>
 
+    <div
+      *ngIf="archiveMode()">
+      Are you sure?
+      <button
+        class="button-negative"
+        (click)="archive()">
+        Archive
+      </button>
+      <button
+        (click)="resetMode()">
+        Cancel
+      </button>
+    </div>
+
     <app-edit-goal-item
-      *ngIf="editMode"
+      *ngIf="editMode()"
       [goal]="goal"
-      (close)="editMode = false">
+      (close)="resetMode()">
     </app-edit-goal-item>
 
     <app-purchase-goal-item
-      *ngIf="purchaseMode"
+      *ngIf="purchaseMode()"
       [goal]="goal"
-      (close)="purchaseMode = false">
+      (close)="resetMode()">
     </app-purchase-goal-item>
   </div>
 </div>

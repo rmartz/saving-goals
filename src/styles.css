@@ -35,6 +35,11 @@ h1, h2 {
   background-color: #f76f6f;
 }
 
+.button-active {
+  background-color: #5454e7;
+  color: #f0f0f0;
+}
+
 .columns {
   width: 100%;
   display: flex;

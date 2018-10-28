@@ -54,18 +54,12 @@ export class Budgets {
       switchMap(user => {
         if (user === null) {
           // We are not logged in to Firebase, so use our BehaviorSubject for Budget management
-
           return this._listBS.asObservable();
         } else {
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
             map(budgets => {
               return budgets.map(budget =>  Budget.fromJSON(budget));
-            }),
-            tap(budgets => {
-              if (budgets.length > 0) {
-                this._budgets = budgets;
-              }
             })
           );
         }

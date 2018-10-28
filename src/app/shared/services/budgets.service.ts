@@ -77,7 +77,9 @@ export class Budgets {
   public delete(budget: Budget) {
     setMembership(this._budgets, budget, false);
 
-    this.afAuth.user.subscribe(user => {
+    this.afAuth.user.pipe(
+      first()
+    ).subscribe(user => {
       if (user === null) {
         this.saveBudgetsLocalStorage();
       } else {

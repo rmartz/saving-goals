@@ -51,4 +51,9 @@ export class EditGoalItemComponent implements OnInit {
   public delete() {
     this.goal.budget.delete(this.goal);
   }
+
+  public reversePurchase() {
+    this.goal.purchased = undefined;
+    this.budgets.save(this.goal.budget);
+  }
 }

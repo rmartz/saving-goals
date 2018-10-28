@@ -46,7 +46,7 @@
 
   <app-action-confirm
     [displayClass]="'button-negative inline'"
-    (confirmed)="goal.purchased = undefined"
+    (confirmed)="reversePurchase()"
     prompt="Un-purchase">
   </app-action-confirm>
 

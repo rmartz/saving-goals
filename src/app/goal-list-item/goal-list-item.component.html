@@ -19,9 +19,6 @@
                 'goal-item-overdrawn': goal.isOverdrawn(),
                 'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
 
-
-
-
     <h2 class="inline">{{goal.label}}</h2>
     <div class="inline">
       <p class="inline">
@@ -35,6 +32,7 @@
       </button>
       <button
         *ngIf="goal.isComplete()"
+        class="button-negative"
         [ngClass]="{'button-active': archiveMode()}"
         (click)="toggleArchiveMode()">
         Archive

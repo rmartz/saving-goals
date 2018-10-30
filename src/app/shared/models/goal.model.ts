@@ -1,16 +1,14 @@
 import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
-import {firestore} from 'firebase/app';
-import Timestamp = firestore.Timestamp;
 
 export interface IGoal {
   label: string;
   target: number;
   current: number;
 
-  created: Timestamp;
-  purchased?: Timestamp;
-  closed?: Timestamp;
+  created: Date;
+  purchased?: Date;
+  closed?: Date;
 }
 
 export class Goal implements IGoal {
@@ -18,9 +16,9 @@ export class Goal implements IGoal {
   target: number;
   current: number;
 
-  created: Timestamp;
-  purchased?: Timestamp;
-  closed?: Timestamp;
+  created: Date;
+  purchased: Date;
+  closed: Date;
   budget: Budget;
 
   public static fromJSON(budget: Budget, json: IGoal) {
@@ -32,7 +30,7 @@ export class Goal implements IGoal {
 
   constructor() {
     this.current = 0;
-    this.created = Timestamp.now();
+    this.created = new Date();
   }
 
   public toJSON(): IGoal {
@@ -64,7 +62,7 @@ export class Goal implements IGoal {
 
   public purchase(cost: number) {
     this.target = cost;
-    this.purchased = Timestamp.now();
+    this.purchased = new Date();
   }
 
   public isFunded(): boolean {

@@ -39,10 +39,10 @@
 </form>
 
 <p *ngIf="goal && goal.created !== undefined">
-  Created: {{goal.created.toDate() | date}}
+  Created: {{goal.created | date}}
 </p>
 <p *ngIf="goal && goal.isPurchased()">
-  Purchased: {{goal.purchased.toDate() | date}}
+  Purchased: {{goal.purchased | date}}
 
   <app-action-confirm
     [displayClass]="'button-negative inline'"

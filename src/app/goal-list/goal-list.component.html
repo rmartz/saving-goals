@@ -3,7 +3,10 @@
     <button class="header-2" (click)="createMode = !createMode">Add goal +</button>
   </div>
 
-  <ul>
+  <ul
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
     <li *ngIf="createMode">
       <div class="goal-item-row">
         <div class="goal-insert">
@@ -21,10 +24,19 @@
         </div>
       </div>
     </li>
-    <li *ngFor="let goal of budget.goals">
-      <app-goal-list-item
-        [goal]="goal">
-      </app-goal-list-item>
+    <li cdkDrag *ngFor="let goal of budget.goals">
+      <div class="goal-item-row">
+        <div class="goal-insert" cdkDragHandle>
+          <hr>
+          <hr>
+          <hr>
+        </div>
+
+        <app-goal-list-item
+          class="grow"
+          [goal]="goal">
+        </app-goal-list-item>
+      </div>
     </li>
   </ul>
 </div>

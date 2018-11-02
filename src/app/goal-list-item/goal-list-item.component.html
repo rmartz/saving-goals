@@ -1,81 +1,65 @@
-<div class="goal-item-row">
-  <div class="goal-insert">
-    <a
-      class="link"
-      (click)="moveUp()">
-      &#8679;
-    </a>
-    <hr>
-    <a
-      class="link"
-      (click)="moveDown()">
-      &#8681;
-    </a>
-  </div>
+<div class="goal-item"
+  [ngClass]="{'goal-item-complete': goal.isComplete(),
+              'goal-item-funded': goal.isFunded(),
+              'goal-item-overdrawn': goal.isOverdrawn(),
+              'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
 
-  <div class="goal-item"
-    [ngClass]="{'goal-item-complete': goal.isComplete(),
-                'goal-item-funded': goal.isFunded(),
-                'goal-item-overdrawn': goal.isOverdrawn(),
-                'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
-
-    <h2 class="inline">{{goal.label}}</h2>
-    <div class="inline">
-      <p class="inline">
-        {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
-      </p>
-      <button
-        *ngIf="!goal.isPurchased()"
-        [ngClass]="{'button-active': purchaseMode()}"
-        (click)="togglePurchaseMode()">
-        Purchase
-      </button>
-      <button
-        *ngIf="goal.isComplete()"
-        class="button-negative"
-        [ngClass]="{'button-active': archiveMode()}"
-        (click)="toggleArchiveMode()">
-        Archive
-      </button>
-      <button
-        [ngClass]="{'button-active': editMode()}"
-        (click)="toggleEditMode()">
-        Edit
-      </button>
-    </div>
-    <mat-progress-bar
-      *ngIf="!goal.isFunded()"
-      [value]="100 * goal.current / goal.target">
-    </mat-progress-bar>
-
-    <p *ngIf="goal.isFunded() && !goal.budget.checkBalance(goal)">
-      Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
+  <h2 class="inline">{{goal.label}}</h2>
+  <div class="inline">
+    <p class="inline">
+      {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
     </p>
-
-    <div
-      *ngIf="archiveMode()">
-      Are you sure?
-      <button
-        class="button-negative"
-        (click)="archive()">
-        Archive
-      </button>
-      <button
-        (click)="resetMode()">
-        Cancel
-      </button>
-    </div>
-
-    <app-edit-goal-item
-      *ngIf="editMode()"
-      [goal]="goal"
-      (close)="resetMode()">
-    </app-edit-goal-item>
-
-    <app-purchase-goal-item
-      *ngIf="purchaseMode()"
-      [goal]="goal"
-      (close)="resetMode()">
-    </app-purchase-goal-item>
+    <button
+      *ngIf="!goal.isPurchased()"
+      [ngClass]="{'button-active': purchaseMode()}"
+      (click)="togglePurchaseMode()">
+      Purchase
+    </button>
+    <button
+      *ngIf="goal.isComplete()"
+      class="button-negative"
+      [ngClass]="{'button-active': archiveMode()}"
+      (click)="toggleArchiveMode()">
+      Archive
+    </button>
+    <button
+      [ngClass]="{'button-active': editMode()}"
+      (click)="toggleEditMode()">
+      Edit
+    </button>
   </div>
+  <mat-progress-bar
+    *ngIf="!goal.isFunded()"
+    [value]="100 * goal.current / goal.target">
+  </mat-progress-bar>
+
+  <p *ngIf="goal.isFunded() && !goal.budget.checkBalance(goal)">
+    Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
+  </p>
+
+  <div
+    *ngIf="archiveMode()">
+    Are you sure?
+    <button
+      class="button-negative"
+      (click)="archive()">
+      Archive
+    </button>
+    <button
+      (click)="resetMode()">
+      Cancel
+    </button>
+  </div>
+
+  <app-edit-goal-item
+    *ngIf="editMode()"
+    [goal]="goal"
+    (close)="resetMode()">
+  </app-edit-goal-item>
+
+  <app-purchase-goal-item
+    *ngIf="purchaseMode()"
+    [goal]="goal"
+    (close)="resetMode()">
+  </app-purchase-goal-item>
 </div>

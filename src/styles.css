@@ -28,6 +28,10 @@ h1, h2 {
   display: inline-block;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
 .inherit {
   display: inherit;
 }
@@ -94,7 +98,11 @@ h1, h2 {
 .goal-insert {
   display: inline-block;
   width: 1rem;
-  margin-right: 1rem;
+  margin-right: 0.4rem;
+}
+
+.goal-insert hr {
+  margin: 0.2rem 0 0.2rem 0;
 }
 
 .budget-display {
@@ -143,7 +151,7 @@ ul.budget-list {
   border: 1px solid #333;
   padding: 0.3rem;
   width: 100%;
-  flex-grow: 1;
+  background-color: #fafafa;
 }
 
 .goal-item-funded {

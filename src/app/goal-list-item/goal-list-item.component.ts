@@ -21,16 +21,6 @@ export class GoalListItemComponent {
 
   constructor(public budgets: Budgets) { }
 
-  public moveUp() {
-    this.goal.budget.moveUp(this.goal);
-    this.budgets.save(this.goal.budget);
-  }
-
-  public moveDown() {
-    this.goal.budget.moveDown(this.goal);
-    this.budgets.save(this.goal.budget);
-  }
-
   public archive() {
     this.goal.budget.archive(this.goal);
     this.budgets.save(this.goal.budget);

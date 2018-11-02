@@ -17,6 +17,7 @@ import { MultiBudgetListComponent } from './multi-budget-list/multi-budget-list.
 import { Budgets } from './shared/services/budgets.service';
 import { environment } from '../environments/environment';
 import { UserLoginComponent } from './user-login/user-login.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { UserLoginComponent } from './user-login/user-login.component';
   imports: [
     BrowserModule,
     FormsModule,
+    DragDropModule,
     MatProgressBarModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

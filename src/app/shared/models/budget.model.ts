@@ -61,22 +61,6 @@ export class Budget implements IBudget {
     this.disperse(goal.current);
   }
 
-  public moveUp(goal: Goal) {
-    const index = this.goals.indexOf(goal);
-    if (index <= 0) {
-      return;
-    }
-    swapItems(this.goals, index, index - 1);
-  }
-
-  public moveDown(goal: Goal) {
-    const index = this.goals.indexOf(goal);
-    if (index < 0 || index + 1 >= this.goals.length) {
-      return;
-    }
-    swapItems(this.goals, index, index + 1);
-  }
-
   public archive(goal: Goal) {
     setMembership(this.goals, goal, false);
     setMembership(this.archived, goal, true);

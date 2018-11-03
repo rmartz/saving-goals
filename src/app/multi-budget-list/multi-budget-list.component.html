@@ -1,24 +1,32 @@
-<ul
-  *ngIf="(budgets.list() | async).length > 0; else newUser"
-  class="budget-list">
-  <li class="budget-column" *ngFor="let budget of budgets.list() | async">
-    <app-budget-display
-      [budget]="budget">
-    </app-budget-display>
-  </li>
-  <li class="budget-column create-budget-column">
-    <button
-      *ngIf="!createMode"
-      (click)="createMode = true">
-      Create new Budget
-    </button>
-    <div *ngIf="createMode">
-      <app-create-budget
-        (close)="createMode=false">
-      </app-create-budget>
-    </div>
-  </li>
-</ul>
+<div
+    *ngIf="budgets.list() | async as budgetList; else loading">
+  <ul
+    *ngIf="budgetList !== null && budgetList.length > 0 else newUser"
+    class="budget-list">
+    <li class="budget-column" *ngFor="let budget of budgetList">
+      <app-budget-display
+        [budget]="budget">
+      </app-budget-display>
+    </li>
+    <li class="budget-column create-budget-column">
+      <button
+        *ngIf="!createMode"
+        (click)="createMode = true">
+        Create new Budget
+      </button>
+      <div *ngIf="createMode">
+        <app-create-budget
+          (close)="createMode=false">
+        </app-create-budget>
+      </div>
+    </li>
+  </ul>
+</div>
+<ng-template #loading>
+  <div class="new-user">
+    Loading...
+  </div>
+</ng-template>
 <ng-template #newUser>
   <div class="new-user">
     <h1>Welcome!</h1>
@@ -34,4 +42,4 @@
       Budgets track an ordered list of Goals, and allow you to earmark a portion of savings to each of your your Goals over time. Goals higher in the list will get a larger portion of each savings contribution earmarked for them than goals lower in the list.
     </p>
   </div>
-  </ng-template>
+</ng-template>

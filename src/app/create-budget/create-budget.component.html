@@ -1,0 +1,22 @@
+<form
+  (ngSubmit)="create()"
+  #budgetEditForm="ngForm">
+
+  <label for="budgetName">
+    Name
+  </label>
+  <input
+    #budgetName
+    name="budgetName"
+    type="text"
+    placeholder="Name"
+    [(ngModel)]="newBudgetName"
+    required>
+
+  <button
+    type="submit"
+    [disabled] = "!budgetEditForm.form.valid">
+    Create
+  </button>
+  <button (click)="cancel($event)">Cancel</button>
+</form>

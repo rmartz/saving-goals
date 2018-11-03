@@ -15,14 +15,16 @@
   <label for="goalTarget">
     Target
   </label>
-  <input
-    #goalTarget
-    name="goalTarget"
-    type="number"
-    [(ngModel)]="target"
-    step="0.01"
-    pattern="^\d+(?:\.\d{1,2})?$"
-    required>
+  <span class="dollar-input">
+    <input
+      #goalTarget
+      name="goalTarget"
+      type="number"
+      [(ngModel)]="target"
+      step="0.01"
+      pattern="^\d+(?:\.\d{1,2})?$"
+      required>
+  </span>
 
   <button
     type="submit"

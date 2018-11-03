@@ -3,14 +3,16 @@
   <label for="goalCost">
     How much did it ultimately cost?
   </label>
-  <input
-    #goalCost
-    name="goalCost"
-    type="number"
-    [(ngModel)]="cost"
-    step="0.01"
-    pattern="^\d+(?:\.\d{1,2})?$"
-    required>
+  <span class="dollar-input">
+    <input
+      #goalCost
+      name="goalCost"
+      type="number"
+      [(ngModel)]="cost"
+      step="0.01"
+      pattern="^\d+(?:\.\d{1,2})?$"
+      required>
+  </span>
 
   <button
     type="submit"

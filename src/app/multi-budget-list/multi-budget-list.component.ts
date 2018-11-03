@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Budgets } from '../shared/services/budgets.service';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-multi-budget-list',
@@ -8,19 +9,7 @@ import { Budgets } from '../shared/services/budgets.service';
 export class MultiBudgetListComponent {
 
   public createMode = false;
-  public newBudgetName = '';
 
-  constructor(public budgets: Budgets) { }
-
-  public create() {
-    this.budgets.create(this.newBudgetName);
-    this.newBudgetName = '';
-    this.createMode = false;
-  }
-
-  public cancel($event) {
-    $event.preventDefault();
-    this.newBudgetName = '';
-    this.createMode = false;
-  }
+  constructor(public budgets: Budgets,
+              public afAuth: AngularFireAuth) { }
 }

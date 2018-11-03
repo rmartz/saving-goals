@@ -1,4 +1,6 @@
-<ul class="budget-list">
+<ul
+  *ngIf="(budgets.list() | async).length > 0; else newUser"
+  class="budget-list">
   <li class="budget-column" *ngFor="let budget of budgets.list() | async">
     <app-budget-display
       [budget]="budget">
@@ -11,29 +13,25 @@
       Create new Budget
     </button>
     <div *ngIf="createMode">
-      <form
-        (ngSubmit)="create()"
-        #budgetEditForm="ngForm">
-
-        <label for="budgetName">
-          Name
-        </label>
-        <input
-          #budgetName
-          name="budgetName"
-          type="text"
-          placeholder="Name"
-          [(ngModel)]="newBudgetName"
-          required>
-
-        <button
-          type="submit"
-          [disabled] = "!budgetEditForm.form.valid">
-          Create
-        </button>
-        <button (click)="cancel($event)">Cancel</button>
-      </form>
+      <app-create-budget
+        (close)="createMode=false">
+      </app-create-budget>
     </div>
   </li>
 </ul>
-
+<ng-template #newUser>
+  <div class="new-user">
+    <h1>Welcome!</h1>
+    <p>
+      Create a Budget to get started:
+    </p>
+    <app-create-budget>
+    </app-create-budget>
+    <p *ngIf="(afAuth.user | async) === null">
+      You can use this entirely without logging in - any Budgets and Goals will be stored locally. When you sign in for the first time, anything stored locally will be automatically copied online and available on any device.
+    </p>
+    <p>
+      Budgets track an ordered list of Goals, and allow you to earmark a portion of savings to each of your your Goals over time. Goals higher in the list will get a larger portion of each savings contribution earmarked for them than goals lower in the list.
+    </p>
+  </div>
+  </ng-template>

@@ -18,10 +18,12 @@ import { Budgets } from './shared/services/budgets.service';
 import { environment } from '../environments/environment';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CreateBudgetComponent } from './create-budget/create-budget.component';
 
 @NgModule({
   declarations: [
     ActionConfirmComponent,
+    CreateBudgetComponent,
     BudgetDisplayComponent,
     GoalListComponent,
     GoalListItemComponent,

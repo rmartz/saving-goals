@@ -11,6 +11,7 @@ export class BudgetDisplayComponent implements OnInit {
   @Input()
   public budget: Budget;
 
+  public showDispersement = false;
   public editMode = false;
   public budgetLabel: string;
 

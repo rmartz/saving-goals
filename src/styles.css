@@ -148,6 +148,11 @@ ul.budget-list {
   list-style: none;
 }
 
+.goal-list-header {
+  display: flex;
+  height: 2rem;
+}
+
 .goal-list ul {
   margin: 0;
   padding: 0;

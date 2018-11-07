@@ -15,6 +15,12 @@ export class GoalListComponent {
 
   public createMode = false;
 
+  public disperse(amount: number) {
+    const amountCents = Math.round(amount * 100);
+    this.budget.disperse(amountCents);
+    this.budgets.save(this.budget);
+  }
+
   public drop(event) {
     console.log(event);
     moveItemInArray(this.budget.goals, event.previousIndex, event.currentIndex);

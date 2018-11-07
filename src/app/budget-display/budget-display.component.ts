@@ -17,12 +17,6 @@ export class BudgetDisplayComponent implements OnInit {
 
   constructor(private budgets: Budgets) { }
 
-  public disperse(amount: number) {
-    const amountCents = Math.round(amount * 100);
-    this.budget.disperse(amountCents);
-    this.budgets.save(this.budget);
-  }
-
   public rename() {
     this.budget.label = this.budgetLabel;
     this.budgets.save(this.budget);

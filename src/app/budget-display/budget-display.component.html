@@ -40,25 +40,6 @@
 
   <hr />
 
-  <div style="float: right">
-    Saved: {{(budget.totalBalance() / 100) | currency}}
-    <button *ngIf="!showDispersement" (click)="showDispersement=true">
-      Add
-    </button>
-
-    <div *ngIf="showDispersement" class="inline">
-      <span class="dollar-input" >
-        <input type="number" #disperseAmount>
-      </span>
-      <button (click)="disperse(disperseAmount.value); disperseAmount.value = ''; showDispersement=false">
-        Distribute
-      </button>
-      <button (click)="showDispersement=false">
-        Cancel
-      </button>
-    </div>
-  </div>
-
   <app-goal-list
     [budget]="budget"
   ></app-goal-list>

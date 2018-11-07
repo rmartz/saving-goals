@@ -11,6 +11,8 @@ export class GoalListComponent {
   @Input()
   public budget: Budget;
 
+  public showDispersement = false;
+
   constructor(private budgets: Budgets) { }
 
   public createMode = false;

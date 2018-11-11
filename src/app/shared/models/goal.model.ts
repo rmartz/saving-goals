@@ -1,41 +1,63 @@
 import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
 
-export interface IGoal {
+
+export interface IGoalBase {
+  label: string;
+  version: number;
+}
+
+export class IGoalV1 implements IGoalBase {
+  public static VERSION = 1;
+
   label: string;
   target: number;
   current: number;
+  version: number;
 
   created: Date;
   purchased?: Date;
   closed?: Date;
+
+  public static fromJSON(start: IGoalBase): IGoalV1 {
+    const end = start as IGoalV1;
+    end.version = this.VERSION;
+    return end;
+  }
 }
+
+export class IGoal extends IGoalV1 { }
 
 export class Goal implements IGoal {
   label: string;
   target: number;
   current: number;
+  version: number;
 
   created: Date;
   purchased: Date;
   closed: Date;
   budget: Budget;
 
-  public static fromJSON(budget: Budget, json: IGoal) {
+  public static fromJSON(budget: Budget, json: IGoalBase) {
+    const latest: IGoal = IGoal.fromJSON(json);
+
     const goal = new Goal();
     goal.budget = budget;
-    Object.assign(goal, json);
+    Object.assign(goal, latest);
     return goal;
   }
 
   constructor() {
     this.current = 0;
+    this.version = IGoal.VERSION;
     this.created = new Date();
   }
 
   public toJSON(): IGoal {
     const data: IGoal = {
      label: this.label,
+     version: this.version,
      target: this.target,
      current: this.current,
      created: this.created

@@ -27,6 +27,13 @@ export class IGoalV1 implements IGoalBase {
 }
 
 export class IGoal extends IGoalV1 { }
+export class IGoalFirebase extends IGoal {
+  // Define these as type "any" so we can call .toDate()
+  // Importing the actual firebase.firestore.Timestamp type fails on production
+  created: any;
+  purchased?: any;
+  closed?: any;
+}
 
 export class Goal implements IGoal {
   label: string;
@@ -39,8 +46,32 @@ export class Goal implements IGoal {
   closed: Date;
   budget: Budget;
 
-  public static fromJSON(budget: Budget, json: IGoalBase) {
+  public static fromJSON(budget: Budget, json: IGoalBase, fromFirebase: boolean) {
     const latest: IGoal = IGoal.fromJSON(json);
+    if (fromFirebase) {
+      // Firebase stores Dates as a special Timestamp type.
+      // Angular can't display these with the `date` pipe, and since we also store records locally,
+      // we don't want to make a special pipe for Firebase specifically.
+      // Take Firebase's special type and convert back to Date, so values will be rendered appropriately
+      const tmp = latest as IGoalFirebase;
+      latest.created = tmp.created.toDate();
+      if (latest.purchased !== undefined) {
+        latest.purchased = tmp.purchased.toDate();
+      }
+      if (latest.closed !== undefined) {
+        latest.closed = tmp.closed.toDate();
+      }
+    } else {
+      // LocalStorage stores Dates as strings, so we want to convert them into Date objects
+      // This will ensure that saving the Date to Firebase will preserve the right type
+      latest.created = new Date(latest.created);
+      if (latest.purchased !== undefined) {
+        latest.purchased = new Date(latest.purchased);
+      }
+      if (latest.closed !== undefined) {
+        latest.closed = new Date(latest.closed);
+      }
+    }
 
     const goal = new Goal();
     goal.budget = budget;

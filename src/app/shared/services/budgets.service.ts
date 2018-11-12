@@ -19,7 +19,7 @@ export class Budgets {
   constructor(private afAuth: AngularFireAuth,
               private readonly afs: AngularFirestore) {
     const savedState = localStorage.getItem('budgets');
-    this.processJsonSaveState(savedState);
+    this.processLocalStorageState(savedState);
 
     const newUserObs = afAuth.user.pipe(
       tap(user => {
@@ -59,7 +59,7 @@ export class Budgets {
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
             map(budgets => {
-              return budgets.map(budget =>  Budget.fromJSON(budget));
+              return budgets.map(budget =>  Budget.fromJSON(budget, true));
             })
           );
         }
@@ -140,11 +140,11 @@ export class Budgets {
     this.saveBudgetsLocalStorage();
   }
 
-  private processJsonSaveState(json: string) {
+  private processLocalStorageState(json: string) {
     if (json !== null) {
       const savedBudgets = JSON.parse(json);
       for (const budgetJson of savedBudgets) {
-        const budget = Budget.fromJSON(budgetJson);
+        const budget = Budget.fromJSON(budgetJson, false);
         this._budgets.push(budget);
       }
 

@@ -18,18 +18,18 @@ export class Budget implements IBudget {
   goals: Goal[] = [];
   archived: Goal[] = [];
 
-  public static fromJSON(json: IBudget): Budget {
+  public static fromJSON(json: IBudget, fromFirebase: boolean): Budget {
     const budget = new Budget();
     budget.label = json['label'];
     budget.owner = json['owner'];
     budget.id = json['id'];
 
     for (const goalJson of json['goals']) {
-      const goal = Goal.fromJSON(budget, goalJson);
+      const goal = Goal.fromJSON(budget, goalJson, fromFirebase);
       budget.goals.push(goal);
     }
     for (const goalJson of json['archived'] || []) {
-      const goal = Goal.fromJSON(budget, goalJson);
+      const goal = Goal.fromJSON(budget, goalJson, fromFirebase);
       budget.archived.push(goal);
     }
     return budget;

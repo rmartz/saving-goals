@@ -59,7 +59,7 @@ export class Budgets {
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
             map(budgets => {
-              return budgets.map(budget =>  Budget.fromJSON(budget, true));
+              return budgets.map(budget =>  Budget.fromJSON(budget));
             })
           );
         }
@@ -144,7 +144,7 @@ export class Budgets {
     if (json !== null) {
       const savedBudgets = JSON.parse(json);
       for (const budgetJson of savedBudgets) {
-        const budget = Budget.fromJSON(budgetJson, false);
+        const budget = Budget.fromJSON(budgetJson);
         this._budgets.push(budget);
       }
 

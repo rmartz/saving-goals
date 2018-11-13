@@ -46,37 +46,26 @@ export class Goal implements IGoal {
   closed: Date;
   budget: Budget;
 
-  public static fromJSON(budget: Budget, json: IGoalBase, fromFirebase: boolean) {
+  public static fromJSON(budget: Budget, json: IGoalBase) {
     const latest: IGoal = IGoal.fromJSON(json);
-    if (fromFirebase) {
-      // Firebase stores Dates as a special Timestamp type.
-      // Angular can't display these with the `date` pipe, and since we also store records locally,
-      // we don't want to make a special pipe for Firebase specifically.
-      // Take Firebase's special type and convert back to Date, so values will be rendered appropriately
-      const tmp = latest as IGoalFirebase;
-      latest.created = tmp.created.toDate();
-      if (latest.purchased !== undefined) {
-        latest.purchased = tmp.purchased.toDate();
-      }
-      if (latest.closed !== undefined) {
-        latest.closed = tmp.closed.toDate();
-      }
-    } else {
-      // LocalStorage stores Dates as strings, so we want to convert them into Date objects
-      // This will ensure that saving the Date to Firebase will preserve the right type
-      latest.created = new Date(latest.created);
-      if (latest.purchased !== undefined) {
-        latest.purchased = new Date(latest.purchased);
-      }
-      if (latest.closed !== undefined) {
-        latest.closed = new Date(latest.closed);
-      }
-    }
+    latest.created = this.genericToDate(latest.created);
+    latest.purchased = this.genericToDate(latest.purchased);
+    latest.closed = this.genericToDate(latest.closed);
 
     const goal = new Goal();
     goal.budget = budget;
     Object.assign(goal, latest);
     return goal;
+  }
+
+  private static genericToDate(value: any) {
+    if (value === undefined) {
+      return undefined;
+    } else if (value.toDate) {
+      return value.toDate();
+    } else {
+      return new Date(value);
+    }
   }
 
   constructor() {

@@ -2,7 +2,7 @@
   [ngClass]="{'goal-item-complete': goal.isComplete(),
               'goal-item-funded': goal.isFunded(),
               'goal-item-overdrawn': goal.isOverdrawn(),
-              'goal-item-affordable': goal.budget.checkBalance(goal) && !goal.isOverdrawn()}">
+              'goal-item-affordable': goalAffordable()}">
 
   <h2 class="inline">{{goal.label}}</h2>
   <div class="inline">
@@ -33,8 +33,8 @@
     [value]="100 * goal.current / goal.target">
   </mat-progress-bar>
 
-  <p *ngIf="goal.isFunded() && !goal.budget.checkBalance(goal)">
-    Note: This goal has reached its target, but you may not have sufficient balance to purchase it.
+  <p *ngIf="goalImpeded()">
+    Note: This goal has reached its target, but this budget does not have sufficient saved balance to purchase it.
   </p>
 
   <div

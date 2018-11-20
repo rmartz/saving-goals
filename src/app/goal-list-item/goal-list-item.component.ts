@@ -21,6 +21,25 @@ export class GoalListItemComponent {
 
   constructor(public budgets: Budgets) { }
 
+  public goalAffordable(): boolean {
+    if (this.goal.isOverdrawn()) {
+      return false;
+    }
+    if (this.goal.isFunded() && !this.goalImpeded()) {
+      return true;
+    }
+
+    // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
+    const available_balance = this.goal.budget.loanableBalance() - this.goal.loanableBalance();
+
+    return this.goal.target - this.goal.current <= available_balance;
+  }
+
+  public goalImpeded(): boolean {
+    // Check if the goal is fully funded, but prevented from being purchased due to insufficient saved balance
+    return this.goal.isFunded() && this.goal.target > this.goal.budget.totalBalance();
+  }
+
   public archive() {
     this.goal.budget.archive(this.goal);
     this.budgets.save(this.goal.budget);

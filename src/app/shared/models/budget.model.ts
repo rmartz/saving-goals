@@ -52,8 +52,11 @@ export class Budget implements IBudget {
     }).reduce((a, b) => a + b, 0);
   }
 
-  public checkBalance(goal: Goal): boolean {
-    return goal.target < this.totalBalance();
+  public loanableBalance(): number {
+    // Calculate the total amount that can be loaned from goals
+    return this.goals.reduce<number>((sum: number, goal: Goal) => {
+      return sum + goal.loanableBalance();
+    }, 0);
   }
 
   public delete(goal: Goal) {

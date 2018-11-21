@@ -99,20 +99,29 @@ export class Budget implements IBudget {
     }
     // Repeat the same process backwards, in case any loanees still have an outstanding balance
     // (This would happen if a goal is purchased for more than could be safely loaned)
-    // This time, we can't cap at the goal's remaining value - these goals may end up having been over leveraged.
-    // Operating in reverse means the goals that are over leveraged have the longest amount of time to make up the gap in other ways.
-    ////////
-    // TODO
-    ////////
+    // This time, we can't cap at the goal's remaining value - these goals may end up having been over-leveraged and may be delayed.
+    // Operating in reverse means the goals that are over-leveraged have the longest amount of time to make up the gap.
+    for (const loanerTuple of loaners.slice(0).reverse()) {
+      const [remainder, _] = loanerTuple;
+      for (const loaneeTuple of liabilities) {
+        const [target, current] = loaneeTuple;
+        const margin = Math.min(remainder, target - current);
+        // Update the values in place so it persists across iterations
+        // Update the current value for the loanee, to reflect it received a contribution
+        loaneeTuple[1] += margin;
+        // Update the remainder value for the loaner, to reflect it has less available to lend
+        loanerTuple[0] -= margin;
+      }
+    }
 
     // Calculate how much can be contributed from remaining balances, ensuring that no goal pushes the total above its per-loan cap.
     return loaners.reduce(
       (sum, loaner) => Math.max(
         sum,
         Math.min(
-          // Return the lesser of the max value this goal can contribute up to,
-          // and what this goal has left to add to the running total sum
-          // If the goal doesn't have enough saved to max itself out, it will contribute as much as it can to help.
+          // Return the lesser of the max this goal can contribute up to,
+          // and what this goal has savings left to add to the running sum.
+          // If the goal doesn't have enough saved to max itself out, it will contribute whatever it can to help.
           loaner[1],
           sum + loaner[0]
         )

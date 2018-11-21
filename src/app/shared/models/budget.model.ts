@@ -65,8 +65,8 @@ export class Budget implements IBudget {
     // Each goal can only contribute to bring the loan up to its own limit, but doing so does help the burden on higher-limit goals.
 
     // To calculate what can be safely loaned:
-    // - Calculate how much of each loaning gaol is already allocated in order of closest to completion to furthest
-    // - In case the user is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
+    // - Calculate how much of each loaning goal is already allocated in order of closest to completion to furthest
+    // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
     // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
 

@@ -29,8 +29,8 @@ export class GoalListItemComponent {
       return true;
     }
 
-    // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
-    const available_balance = this.goal.budget.loanableBalance() - this.goal.loanableBalance();
+    // Calculate the loanable balance that might be able to complete this goal
+    const available_balance = this.goal.budget.loanableBalance(this.goal);
 
     return this.goal.target - this.goal.current <= available_balance;
   }

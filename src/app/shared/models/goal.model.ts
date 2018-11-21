@@ -129,20 +129,4 @@ export class Goal implements IGoal {
     // A goal is overdrawn if it was purchased but still has yet to reach its goal.
     return this.isPurchased() && !this.isFunded();
   }
-
-  public loanableBalance(): number {
-    // A goal can loan however much it has earmarked, so long as the loan will not prevent the goal
-    //  from being purchased when fully funded.
-    // We assume that the loaning goal will receive at least as much per contribution as the goals
-    //  it is loaning from, so it is safe to loan out less than what the goal needs to be funded.
-    // Goals that are already negative (And so have outstanding loans from other goals) will count
-    //  against the loanable balance.
-    if (this.isPurchased()) {
-      // The goal has already been purchased, so count any outstanding balance against our total
-      return this.current - this.target;
-    } else {
-      // The goal can loan whatever it has earmarked, up to the amount it needs to be funded.
-      return Math.min(this.current, this.target - this.current);
-    }
-  }
 }

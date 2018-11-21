@@ -46,8 +46,9 @@ export class PurchaseGoalItemComponent implements OnInit {
   }
 
   public impedeGoal(): boolean {
-    // Return True if purchasing this goal for cost would cause total saved balance to be below the total allocated to another goal
-    const estimatedBalance = this.goal.budget.totalBalance() - this.cost * 100;
-    return this.goal.budget.goals.some(goal => goal !== this.goal && goal.current > estimatedBalance);
+    // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
+    const available_balance = this.goal.budget.loanableBalance(this.goal);
+
+    return (this.cost * 100) - this.goal.current > available_balance;
   }
 }

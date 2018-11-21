@@ -52,8 +52,82 @@ export class Budget implements IBudget {
     }).reduce((a, b) => a + b, 0);
   }
 
-  public checkBalance(goal: Goal): boolean {
-    return goal.target < this.totalBalance();
+  public loanableBalance(recipient: Goal): number {
+    // Calculating how much can be safely loaned to a goal is relatively complicated
+    // To help simplify the already complex relationships, we assume that all goals accrue savings at the same rate.
+    // (So long as purchased goals are ranked above non-purchased goals, this is safely a conservative assumption)
+    // A goal can loan out to other goals in total the amount that it has saved, but in order to ensure that the necessary balance is
+    //  available it cannot lend to any single goal more than the amount it has remaining to be funded.
+    // Limiting each loan to that amount ensures that the recipient will have accrued the amount loaned before the loaning goal is funded.
+    // e.g., a goal that has $9 saved out of $10 can lend out $9 total, but only for goals that are short $1 at a time.
+    // This will ensure that when example goal reaches $10 saved, all of the $1 loans will have been repaid and the $10 is available.
+    // This means goals can contribute a partial amount for a loan, but not additively...
+    // Each goal can only contribute to bring the loan up to its own limit, but doing so does help the burden on higher-limit goals.
+
+    // To calculate what can be safely loaned:
+    // - Calculate how much of each loaning goal is already allocated in order of closest to completion to furthest
+    // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
+    // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
+    //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
+
+    // liabilities is a list of [amount loaned, amount accounted for]
+    const liabilities = this.goals.filter(
+      goal => goal.isOverdrawn()
+    ).map<[number, number]>(
+      goal => [goal.target - goal.current, 0]
+    );
+    // loaners is a list of [available to lend, max per loan]
+    const loaners = this.goals.filter(
+      // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
+      goal => !goal.isPurchased() && !goal.isFunded() && goal !== recipient
+    ).map<[number, number]>(
+      goal => [goal.current, goal.target - goal.current]
+    ).sort((a, b) => a[1] - b[1]);
+
+    // Calculate what portion of each loaning goal is already earmarked
+    for (const loanerTuple of loaners) {
+      const [remainder, cap] = loanerTuple;
+      for (const loaneeTuple of liabilities) {
+        const [target, current] = loaneeTuple;
+        const margin = Math.min(remainder, cap, target - current);
+        // Update the values in place so it persists across iterations
+        // Update the current value for the loanee, to reflect it received a contribution
+        loaneeTuple[1] += margin;
+        // Update the remainder value for the loaner, to reflect it has less available to lend
+        loanerTuple[0] -= margin;
+      }
+    }
+    // Repeat the same process backwards, in case any loanees still have an outstanding balance
+    // (This would happen if a goal is purchased for more than could be safely loaned)
+    // This time, we can't cap at the goal's remaining value - these goals may end up having been over-leveraged and may be delayed.
+    // Operating in reverse means the goals that are over-leveraged have the longest amount of time to make up the gap.
+    for (const loanerTuple of loaners.slice(0).reverse()) {
+      const [remainder, _] = loanerTuple;
+      for (const loaneeTuple of liabilities) {
+        const [target, current] = loaneeTuple;
+        const margin = Math.min(remainder, target - current);
+        // Update the values in place so it persists across iterations
+        // Update the current value for the loanee, to reflect it received a contribution
+        loaneeTuple[1] += margin;
+        // Update the remainder value for the loaner, to reflect it has less available to lend
+        loanerTuple[0] -= margin;
+      }
+    }
+
+    // Calculate how much can be contributed from remaining balances, ensuring that no goal pushes the total above its per-loan cap.
+    return loaners.reduce(
+      (sum, loaner) => Math.max(
+        sum,
+        Math.min(
+          // Return the lesser of the max this goal can contribute up to,
+          // and what this goal has savings left to add to the running sum.
+          // If the goal doesn't have enough saved to max itself out, it will contribute whatever it can to help.
+          loaner[1],
+          sum + loaner[0]
+        )
+      ),
+      0
+    );
   }
 
   public delete(goal: Goal) {

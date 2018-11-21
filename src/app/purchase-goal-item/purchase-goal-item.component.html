@@ -23,13 +23,16 @@
     Cancel
   </button>
 
-  <p *ngIf="exceedAccrued()">
-    The cost is greater than the goal's currently saved balance. The difference will count against the total amount saved, and this goal will be kept active until the saved balance reaches the purchase cost.
+  <p *ngIf="exceedAccrued() && !impedeGoal()">
+    The cost is greater than this goal's currently saved balance, purchasing will safely borrow the difference from other goals.
   </p>
   <p *ngIf="impedeGoal()">
-    Purchasing will reduce this budget's total saved amount available to be less than the amount already allocated for at least one other goal, and may prevent being able to purchase that goal or goals temporarily.
+    This cost is greater than this goal's currently saved balance, and borrowing the difference from other goals may result in the amount borrowed still being outstanding when they are fully funded. This could potentially delay other goals' purchase, even once fully funded.
+  </p>
+  <p *ngIf="exceedAccrued()">
+    After purchase, this goal will be kept active until it is fully funded and the saved balance reaches the purchase cost.
   </p>
   <p *ngIf="exceedTotalBalance()">
-    <em>Note:</em> The cost is greater than this budget's total saved amount available.
+    <em>Note:</em> The cost is greater than the available amount saved across all other goals for this budget.
   </p>
 </form>

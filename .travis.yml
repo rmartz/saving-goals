@@ -21,6 +21,7 @@ deploy:
   bucket: savings.reedmartz.com
   skip_cleanup: true
   local_dir: dist/saving-goals
+  cache_control: "max-age=86400"
   on:
     branch: develop
 notifications:

@@ -1,4 +1,4 @@
-![Travis CI status](https://travis-ci.org/rmartz/saving-goals.svg?branch=develop)
+[![Travis CI status](https://travis-ci.org/rmartz/saving-goals.svg?branch=develop)](https://travis-ci.org/rmartz/saving-goals)
 
 # Saving Goals
 This project aims to help achieve long-term goals by organizing goals in order of priority and earmarking portions of savings contributions towards each goal. Contributions must be entered manually, and disperse across a budget's goals in decreasing proportion so that goals towards the top receive the highest relative proportion of the contribution.

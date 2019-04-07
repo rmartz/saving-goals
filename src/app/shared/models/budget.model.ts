@@ -71,7 +71,7 @@ export class Budget implements IBudget {
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
 
     // liabilities is a list of [amount loaned, amount accounted for]
-    const liabilities = this.goals.filter(
+    let liabilities = this.goals.filter(
       goal => goal.isOverdrawn()
     ).map<[number, number]>(
       goal => [goal.target - goal.current, 0]
@@ -86,7 +86,12 @@ export class Budget implements IBudget {
 
     // Calculate what portion of each loaning goal is already earmarked
     for (const loanerTuple of loaners) {
-      const [remainder, cap] = loanerTuple;
+      let [remainder] = loanerTuple;
+      const [, cap] = loanerTuple;
+      liabilities = liabilities.filter(([target, current]) => target > current);
+      if (liabilities.length === 0) {
+        break;
+      }
       for (const loaneeTuple of liabilities) {
         const [target, current] = loaneeTuple;
         const margin = Math.min(remainder, cap, target - current);
@@ -94,6 +99,7 @@ export class Budget implements IBudget {
         // Update the current value for the loanee, to reflect it received a contribution
         loaneeTuple[1] += margin;
         // Update the remainder value for the loaner, to reflect it has less available to lend
+        remainder -= margin;
         loanerTuple[0] -= margin;
       }
     }
@@ -102,7 +108,12 @@ export class Budget implements IBudget {
     // This time, we can't cap at the goal's remaining value - these goals may end up having been over-leveraged and may be delayed.
     // Operating in reverse means the goals that are over-leveraged have the longest amount of time to make up the gap.
     for (const loanerTuple of loaners.slice(0).reverse()) {
-      const [remainder, _] = loanerTuple;
+      let [remainder] = loanerTuple;
+
+      liabilities = liabilities.filter(([target, current]) => target > current);
+      if (liabilities.length === 0) {
+        break;
+      }
       for (const loaneeTuple of liabilities) {
         const [target, current] = loaneeTuple;
         const margin = Math.min(remainder, target - current);
@@ -110,6 +121,7 @@ export class Budget implements IBudget {
         // Update the current value for the loanee, to reflect it received a contribution
         loaneeTuple[1] += margin;
         // Update the remainder value for the loaner, to reflect it has less available to lend
+        remainder -= margin;
         loanerTuple[0] -= margin;
       }
     }

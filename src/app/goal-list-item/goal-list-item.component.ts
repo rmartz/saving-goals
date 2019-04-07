@@ -37,7 +37,7 @@ export class GoalListItemComponent {
 
   public goalImpeded(): boolean {
     // Check if the goal is fully funded, but prevented from being purchased due to insufficient saved balance
-    return this.goal.isFunded() && this.goal.target > this.goal.budget.totalBalance();
+    return this.goal.isFunded() && !this.goal.isPurchased() && this.goal.target > this.goal.budget.totalBalance();
   }
 
   public archive() {

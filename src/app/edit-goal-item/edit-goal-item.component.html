@@ -11,7 +11,6 @@
     [(ngModel)]="name"
     required>
 
-
   <label for="goalTarget">
     Target
   </label>
@@ -25,6 +24,18 @@
       pattern="^\d+(?:\.\d{1,2})?$"
       required>
   </span>
+
+  <div *ngIf="!this.goal?.purchased">
+    <label for="goalEarmark">
+      Earmark
+    </label>
+    <input
+      id="goalEarmark"
+      name="goalEarmark"
+      type="checkbox"
+      [(ngModel)]="earmarked"
+      value="Earmarked">
+  </div>
 
   <button
     type="submit"

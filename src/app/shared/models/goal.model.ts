@@ -26,7 +26,27 @@ export class IGoalV1 implements IGoalBase {
   }
 }
 
-export class IGoal extends IGoalV1 { }
+export class IGoalV2 extends IGoalV1 {
+  public static VERSION = 2;
+
+  earmarked: boolean;
+
+  public static fromJSON(start: IGoalBase): IGoalV2 {
+    if (start.version > this.VERSION) {
+      throw new Error('Unexpected Goal version');
+    }
+    if (start.version === this.VERSION) {
+      return start as IGoalV2;
+    }
+
+    const end = IGoalV1.fromJSON(start) as IGoalV2;
+    end.version = this.VERSION;
+    end.earmarked = false;
+    return end;
+  }
+}
+
+export class IGoal extends IGoalV2 { }
 export class IGoalFirebase extends IGoal {
   // Define these as type "any" so we can call .toDate()
   // Importing the actual firebase.firestore.Timestamp type fails on production
@@ -40,6 +60,7 @@ export class Goal implements IGoal {
   target: number;
   current: number;
   version: number;
+  earmarked: boolean;
 
   created: Date;
   purchased: Date;
@@ -80,6 +101,7 @@ export class Goal implements IGoal {
      version: this.version,
      target: this.target,
      current: this.current,
+     earmarked: this.earmarked,
      created: this.created
     };
     if (this.purchased !== undefined) {

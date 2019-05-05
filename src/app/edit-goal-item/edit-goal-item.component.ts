@@ -20,6 +20,7 @@ export class EditGoalItemComponent implements OnInit {
 
   public name: string;
   public target: number;
+  public earmarked: boolean;
 
   constructor(private budgets: Budgets) { }
 
@@ -27,6 +28,7 @@ export class EditGoalItemComponent implements OnInit {
     if (this.goal !== undefined) {
       this.name = this.goal.label;
       this.target = parseFloat((this.goal.target / 100).toFixed(2));
+      this.earmarked = this.goal.earmarked;
     }
   }
 
@@ -37,6 +39,7 @@ export class EditGoalItemComponent implements OnInit {
     }
     goal.label = this.name;
     goal.target = Math.round(this.target * 100);
+    goal.earmarked = this.earmarked;
     goal.save();
 
     this.budgets.save(goal.budget);

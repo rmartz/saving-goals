@@ -69,60 +69,70 @@ export class Budget implements IBudget {
     // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
     // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
+    class LiabilityGoal {
+      public goal: Goal;
+      public debt: number;
+      public accounted: number;
+    }
+    class LoanerGoal {
+      public goal: Goal;
+      public available: number;
+      public maxLoan: number;
+    }
 
-    // liabilities is a list of [amount loaned, amount accounted for]
-    let liabilities = this.goals.filter(
-      goal => goal.isOverdrawn()
-    ).map<[number, number]>(
-      goal => [goal.target - goal.current, 0]
+    let liabilities: LiabilityGoal[] = this.goals.filter(
+      goal => (goal.isOverdrawn() || goal.earmarked) && goal !== recipient
+    ).map<LiabilityGoal>(goal => ({
+        goal: goal,
+        debt: goal.target - goal.current,
+        accounted: 0
+      })
     );
     // loaners is a list of [available to lend, max per loan]
-    const loaners = this.goals.filter(
+    const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && goal !== recipient
-    ).map<[number, number]>(
-      goal => [goal.current, goal.target - goal.current]
-    ).sort((a, b) => a[1] - b[1]);
+      goal => !goal.isPurchased() && !goal.isFunded() && !goal.earmarked && goal !== recipient
+    ).map<LoanerGoal>(
+      goal => ({
+        goal: goal,
+        available: goal.current,
+        maxLoan: goal.target - goal.current
+      })
+    ).sort((a, b) => a.maxLoan - b.maxLoan);
 
     // Calculate what portion of each loaning goal is already earmarked
-    for (const loanerTuple of loaners) {
-      let [remainder] = loanerTuple;
-      const [, cap] = loanerTuple;
-      liabilities = liabilities.filter(([target, current]) => target > current);
+    for (const loaner of loaners) {
+      liabilities = liabilities.filter(liability => liability.accounted < liability.debt);
       if (liabilities.length === 0) {
         break;
       }
-      for (const loaneeTuple of liabilities) {
-        const [target, current] = loaneeTuple;
-        const margin = Math.min(remainder, cap, target - current);
+      for (const liability of liabilities) {
+        const margin = Math.min(loaner.available, loaner.maxLoan, liability.debt - liability.accounted);
         // Update the values in place so it persists across iterations
         // Update the current value for the loanee, to reflect it received a contribution
-        loaneeTuple[1] += margin;
+        liability.accounted += margin;
         // Update the remainder value for the loaner, to reflect it has less available to lend
-        remainder -= margin;
-        loanerTuple[0] -= margin;
+        loaner.available -= margin;
       }
     }
     // Repeat the same process backwards, in case any loanees still have an outstanding balance
     // (This would happen if a goal is purchased for more than could be safely loaned)
     // This time, we can't cap at the goal's remaining value - these goals may end up having been over-leveraged and may be delayed.
     // Operating in reverse means the goals that are over-leveraged have the longest amount of time to make up the gap.
-    for (const loanerTuple of loaners.slice(0).reverse()) {
-      let [remainder] = loanerTuple;
-
-      liabilities = liabilities.filter(([target, current]) => target > current);
+    // For this step, only consider purchased liabilities
+    liabilities = liabilities.filter(liability => liability.goal.isPurchased());
+    for (const loaner of loaners.slice(0).reverse()) {
+      liabilities = liabilities.filter(liability => liability.accounted < liability.debt);
       if (liabilities.length === 0) {
         break;
       }
-      for (const loaneeTuple of liabilities) {
-        const [target, current] = loaneeTuple;
-        const margin = Math.min(remainder, target - current);
+      for (const liability of liabilities) {
+        const margin = Math.min(loaner.available, liability.debt - liability.accounted);
         // Update the values in place so it persists across iterations
         // Update the current value for the loanee, to reflect it received a contribution
-        loaneeTuple[1] += margin;
+        liability.accounted += margin;
         // Update the remainder value for the loaner, to reflect it has less available to lend
-        remainder -= margin;
-        loanerTuple[0] -= margin;
+        loaner.available -= margin;
       }
     }
 
@@ -134,8 +144,8 @@ export class Budget implements IBudget {
           // Return the lesser of the max this goal can contribute up to,
           // and what this goal has savings left to add to the running sum.
           // If the goal doesn't have enough saved to max itself out, it will contribute whatever it can to help.
-          loaner[1],
-          sum + loaner[0]
+          loaner.goal.target,
+          sum + loaner.available
         )
       ),
       0

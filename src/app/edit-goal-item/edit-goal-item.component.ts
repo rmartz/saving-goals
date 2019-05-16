@@ -20,7 +20,7 @@ export class EditGoalItemComponent implements OnInit {
 
   public name: string;
   public target: number;
-  public earmarked: boolean;
+  public earmarked = false;
 
   constructor(private budgets: Budgets) { }
 

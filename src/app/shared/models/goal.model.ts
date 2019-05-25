@@ -151,4 +151,8 @@ export class Goal implements IGoal {
     // A goal is overdrawn if it was purchased but still has yet to reach its goal.
     return this.isPurchased() && !this.isFunded();
   }
+
+  public isEarmarked(): boolean {
+    return this.earmarked && !this.isPurchased();
+  }
 }

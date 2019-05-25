@@ -2,7 +2,8 @@
   [ngClass]="{'goal-item-complete': goal.isComplete(),
               'goal-item-funded': goal.isFunded(),
               'goal-item-overdrawn': goal.isOverdrawn(),
-              'goal-item-affordable': goalAffordable()}">
+              'goal-item-affordable': goalAffordable(),
+              'goal-item-earmarked': goal.isEarmarked()}">
 
   <h2 class="inline">{{goal.label}}</h2>
   <div class="inline">

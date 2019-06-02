@@ -207,7 +207,7 @@ ul.budget-list {
 }
 
 .goal-item-earmarked {
-  background-color: #d6d6d6;
+  border: 2px solid #333;
 }
 
 .budget-column:not(:last-child) {

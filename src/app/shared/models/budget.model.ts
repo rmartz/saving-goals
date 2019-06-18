@@ -81,7 +81,7 @@ export class Budget implements IBudget {
     }
 
     let liabilities: LiabilityGoal[] = this.goals.filter(
-      goal => (goal.isOverdrawn() || goal.earmarked) && goal !== recipient
+      goal => (goal.isOverdrawn() || (goal.earmarked && goal !== recipient))
     ).map<LiabilityGoal>(goal => ({
         goal: goal,
         debt: goal.target - goal.current,
@@ -91,7 +91,7 @@ export class Budget implements IBudget {
     // loaners is a list of [available to lend, max per loan]
     const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && !goal.earmarked && goal !== recipient
+      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || goal === recipient)
     ).map<LoanerGoal>(
       goal => ({
         goal: goal,
@@ -107,7 +107,17 @@ export class Budget implements IBudget {
         break;
       }
       for (const liability of liabilities) {
-        const margin = Math.min(loaner.available, loaner.maxLoan, liability.debt - liability.accounted);
+        // Loan either up to the liability's limit, or the maximum loan
+        // this loaner can contribute to.
+        const cap = Math.min(
+          liability.debt,
+          loaner.maxLoan
+        );
+        // Contribute what's needed, cap to what the loaner has available.
+        const margin = Math.min(
+          loaner.available,
+          Math.max(cap - liability.accounted, 0),
+        );
         // Update the values in place so it persists across iterations
         // Update the current value for the loanee, to reflect it received a contribution
         liability.accounted += margin;
@@ -127,7 +137,10 @@ export class Budget implements IBudget {
         break;
       }
       for (const liability of liabilities) {
-        const margin = Math.min(loaner.available, liability.debt - liability.accounted);
+        const margin = Math.min(
+          loaner.available,
+          Math.max(liability.debt - liability.accounted, 0)
+        );
         // Update the values in place so it persists across iterations
         // Update the current value for the loanee, to reflect it received a contribution
         liability.accounted += margin;

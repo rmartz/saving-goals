@@ -32,7 +32,7 @@ export class GoalListItemComponent {
     // Calculate the loanable balance that might be able to complete this goal
     const available_balance = this.goal.budget.loanableBalance(this.goal);
 
-    return this.goal.target - this.goal.current <= available_balance;
+    return this.goal.target <= available_balance;
   }
 
   public goalImpeded(): boolean {

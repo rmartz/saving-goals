@@ -153,7 +153,7 @@ ul.budget-list {
   height: 2rem;
 }
 
-.goal-list ul {
+.goal-list>ul {
   margin: 0;
   padding: 0;
   display: flex;
@@ -164,7 +164,7 @@ ul.budget-list {
   overflow-y: scroll;
 }
 
-.goal-list li {
+.goal-list>ul>li {
   list-style: none;
   width: 100%;
   margin: 0.5rem 0 0.5rem 0;
@@ -221,4 +221,43 @@ ul.budget-list {
   text-align: center;
   background-color: #fafafa;
   flex-grow: 1;
+}
+
+.progress-bar {
+  display: flex;
+  list-style-type: none;
+  width: 100%;
+  margin: 0;
+  margin-left: auto;
+  padding: 0;
+  height: calc(0.7rem + 2px);
+  border: 1px solid #333;
+  overflow: hidden;
+}
+.progress-segment:not(:last-child) {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  height: 0.7rem;
+}
+.progress-segment.safe-balance {
+  background-color: #7dff7d;
+}
+.progress-segment.unsafe-balance {
+  background-color: #dcfcc9;
+}
+.progress-segment.loanable-balance {
+  background-color: #7979e6;
+}
+.goal-item-overdrawn .progress-segment.loanable-balance {
+  background-color: #fff48c;
+}
+
+.progress-segment.remainder {
+  flex-grow: 1;
+  width: auto;
+  background-color: #dddddd;
+}
+.goal-item-overdrawn .progress-segment.remainder {
+  background-color: #fd8171;
 }

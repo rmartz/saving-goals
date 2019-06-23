@@ -81,7 +81,7 @@ export class Budget implements IBudget {
     }
 
     let liabilities: LiabilityGoal[] = this.goals.filter(
-      goal => (goal.isOverdrawn() || (goal.earmarked && goal !== recipient))
+      goal => ((goal.isOverdrawn() || (!recipient.purchased && goal.earmarked)) && goal !== recipient)
     ).map<LiabilityGoal>(goal => ({
         goal: goal,
         debt: goal.target - goal.current,
@@ -91,7 +91,7 @@ export class Budget implements IBudget {
     // loaners is a list of [available to lend, max per loan]
     const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || goal === recipient)
+      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || goal === recipient || recipient.purchased)
     ).map<LoanerGoal>(
       goal => ({
         goal: goal,

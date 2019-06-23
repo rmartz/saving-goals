@@ -19,6 +19,7 @@ import { environment } from '../environments/environment';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBudgetComponent } from './create-budget/create-budget.component';
+import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { CreateBudgetComponent } from './create-budget/create-budget.component';
     BudgetDisplayComponent,
     GoalListComponent,
     GoalListItemComponent,
+    GoalProgressBarComponent,
     EditGoalItemComponent,
     PurchaseGoalItemComponent,
     MultiBudgetListComponent,

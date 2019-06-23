@@ -29,10 +29,13 @@
       Edit
     </button>
   </div>
-  <mat-progress-bar
+
+  <app-goal-progress-bar
     *ngIf="!goal.isFunded()"
-    [value]="100 * goal.current / goal.target">
-  </mat-progress-bar>
+    [balance]="goal.current"
+    [available]="loanableBalance"
+    [target]="goal.target">
+  </app-goal-progress-bar>
 
   <p *ngIf="goalImpeded()">
     Note: This goal has reached its target, but this budget does not have sufficient saved balance to purchase it.

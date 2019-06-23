@@ -16,12 +16,18 @@ enum GoalListItemMode {
 export class GoalListItemComponent {
   @Input()
   public goal: Goal;
+  public safeBalance: number;
+  public unsafeBalance: number;
+  public loanableBalance: number;
 
   public mode: GoalListItemMode;
 
   constructor(public budgets: Budgets) { }
 
   public goalAffordable(): boolean {
+    // Calculate the loanable balance that might be able to complete this goal
+    this.loanableBalance = this.goal.budget.loanableBalance(this.goal);
+
     if (this.goal.isOverdrawn()) {
       return false;
     }
@@ -29,10 +35,7 @@ export class GoalListItemComponent {
       return true;
     }
 
-    // Calculate the loanable balance that might be able to complete this goal
-    const available_balance = this.goal.budget.loanableBalance(this.goal);
-
-    return this.goal.target <= available_balance;
+    return this.goal.target <= this.loanableBalance;
   }
 
   public goalImpeded(): boolean {

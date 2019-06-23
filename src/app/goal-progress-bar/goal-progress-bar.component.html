@@ -1,0 +1,13 @@
+<ul class="progress-bar">
+  <li class="progress-segment safe-balance"
+    ng-if="safeWidthPercent() > 1"
+    [style.width.%]="safeWidthPercent()"></li>
+  <li class="progress-segment unsafe-balance"
+    ng-if="unsafeWidthPercent() > 1"
+    [style.width.%]="unsafeWidthPercent()"></li>
+  <li class="progress-segment loanable-balance"
+    ng-if="loanableWidthPercent() > 1"
+    [style.width.%]="loanableWidthPercent()">
+  </li>
+  <li class="progress-segment remainder"></li>
+</ul>

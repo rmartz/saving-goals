@@ -28,4 +28,25 @@ export class GoalListComponent {
     moveItemInArray(this.budget.goals, event.previousIndex, event.currentIndex);
     this.budgets.save(this.budget);
   }
+
+  public sortGoals() {
+    this.budget.goals.sort((a, b) => {
+      if (a.isPurchased() !== b.isPurchased()) {
+        // If one of the goals is purchased, place the purchased one on top
+        if (a.isPurchased()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      } else if (a.isPurchased()) {
+        // Both are purchased, sort by remaining unfunded amount
+        return (a.target - a.current) - (b.target - b.current);
+      } else {
+        // Neither are purchased, sort by target
+        return b.target - a.target;
+      }
+    });
+
+    this.budgets.save(this.budget);
+  }
 }

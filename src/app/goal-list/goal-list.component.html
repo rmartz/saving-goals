@@ -4,11 +4,16 @@
 <div class="goal-list">
   <div class="goal-list-header">
     <div
-      class="align-left"
+      class="grow align-left"
       *ngIf="!createMode">
       <button class="header-2" (click)="createMode = !createMode">Add goal +</button>
+      <app-action-confirm
+        [displayClass]="'button-positive'"
+        (confirmed)="sortGoals()"
+        prompt="&uarr;&darr; Sort Goals">
+      </app-action-confirm>
     </div>
-    <div class="grow align-right">
+    <div class="align-right">
       Saved: {{(budget.totalBalance() / 100) | currency}}
       <button *ngIf="!showDispersement" (click)="showDispersement=true">
         Add
@@ -27,7 +32,6 @@
       </div>
     </div>
   </div>
-
 
   <ul
     cdkDropList

@@ -261,3 +261,18 @@ ul.budget-list {
 .goal-item-overdrawn .progress-segment.remainder {
   background-color: #fd8171;
 }
+
+.goal-item-detail-bar {
+  display: flex;
+}
+
+.goal-item-detail-content {
+  flex-grow: 1;
+}
+
+.goal-item-controls {
+  flex-shrink: 0;
+  vertical-align: middle;
+  margin: auto;
+  padding-right: 0.3rem;
+}

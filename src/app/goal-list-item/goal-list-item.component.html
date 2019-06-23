@@ -5,29 +5,35 @@
               'goal-item-affordable': goalAffordable(),
               'goal-item-earmarked': goal.isEarmarked()}">
 
-  <h2 class="inline">{{goal.label}}</h2>
-  <div class="inline">
-    <p class="inline">
-      {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
-    </p>
-    <button
-      *ngIf="!goal.isPurchased()"
-      [ngClass]="{'button-active': purchaseMode()}"
-      (click)="togglePurchaseMode()">
-      Purchase
-    </button>
-    <button
-      *ngIf="goal.isComplete()"
-      class="button-negative"
-      [ngClass]="{'button-active': archiveMode()}"
-      (click)="toggleArchiveMode()">
-      Archive
-    </button>
-    <button
-      [ngClass]="{'button-active': editMode()}"
-      (click)="toggleEditMode()">
-      Edit
-    </button>
+  <div class="goal-item-detail-bar">
+    <div class="goal-item-detail-content">
+      <h2 class="inline">
+        {{goal.label}}
+      </h2>
+      <p class="inline">
+          {{ (goal.current / 100) | currency:"USD" }} of {{ (goal.target / 100) | currency:"USD" }} goal
+        </p>
+    </div>
+    <div class="goal-item-controls">
+        <button
+        *ngIf="!goal.isPurchased()"
+        [ngClass]="{'button-active': purchaseMode()}"
+        (click)="togglePurchaseMode()">
+        Purchase
+      </button>
+      <button
+        *ngIf="goal.isComplete()"
+        class="button-negative"
+        [ngClass]="{'button-active': archiveMode()}"
+        (click)="toggleArchiveMode()">
+        Archive
+      </button>
+      <button
+        [ngClass]="{'button-active': editMode()}"
+        (click)="toggleEditMode()">
+        Edit
+      </button>
+    </div>
   </div>
 
   <app-goal-progress-bar

@@ -1,5 +1,4 @@
-import { Goal, IGoal } from './goal.model';
-import { swapItems } from '../utils/ordering';
+import { Goal, IGoal, GoalStatus } from './goal.model';
 import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
@@ -213,5 +212,22 @@ export class Budget implements IBudget {
     const weightedGoals = goals.map<[Goal, number]>((goal, index) => [goal, 1.0 / (index + 1)]);
     const sum = weightedGoals.reduce((a, b) => a + b[1], 0);
     return weightedGoals.map<[Goal, number]>(value => [value[0], value[1] / sum]);
+  }
+
+  public sortGoals() {
+    this.goals.sort((a, b) => {
+      const aStatus = a.status();
+      const bStatus = b.status();
+      if (aStatus !== bStatus) {
+        return aStatus - bStatus;
+      }
+      if (aStatus == GoalStatus.Purchased) {
+        // Both are purchased, sort by remaining unfunded amount
+        return (a.target - a.current) - (b.target - b.current);
+      } else {
+        // Neither are purchased, sort by target
+        return b.target - a.target;
+      }
+    });
   }
 }

@@ -7,11 +7,6 @@
       class="grow align-left"
       *ngIf="!createMode">
       <button class="header-2" (click)="createMode = !createMode">Add goal +</button>
-      <app-action-confirm
-        [displayClass]="'button-positive'"
-        (confirmed)="sortGoals()"
-        prompt="&uarr;&darr; Sort Goals">
-      </app-action-confirm>
     </div>
     <div class="align-right">
       Saved: {{(budget.totalBalance() / 100) | currency}}
@@ -33,10 +28,7 @@
     </div>
   </div>
 
-  <ul
-    cdkDropList
-    (cdkDropListDropped)="drop($event)"
-  >
+  <ul>
     <li *ngIf="createMode">
       <div class="goal-item-row">
         <div class="goal-insert">
@@ -54,14 +46,8 @@
         </div>
       </div>
     </li>
-    <li cdkDrag *ngFor="let goal of budget.goals">
+    <li *ngFor="let goal of budget.goals">
       <div class="goal-item-row">
-        <div class="goal-insert" cdkDragHandle>
-          <hr>
-          <hr>
-          <hr>
-        </div>
-
         <app-goal-list-item
           class="grow"
           [goal]="goal">

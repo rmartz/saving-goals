@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { Budget } from '../shared/models/budget.model';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Budgets } from '../shared/services/budgets.service';
 
 @Component({
@@ -20,33 +19,6 @@ export class GoalListComponent {
   public disperse(amount: number) {
     const amountCents = Math.round(amount * 100);
     this.budget.disperse(amountCents);
-    this.budgets.save(this.budget);
-  }
-
-  public drop(event) {
-    console.log(event);
-    moveItemInArray(this.budget.goals, event.previousIndex, event.currentIndex);
-    this.budgets.save(this.budget);
-  }
-
-  public sortGoals() {
-    this.budget.goals.sort((a, b) => {
-      if (a.isPurchased() !== b.isPurchased()) {
-        // If one of the goals is purchased, place the purchased one on top
-        if (a.isPurchased()) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else if (a.isPurchased()) {
-        // Both are purchased, sort by remaining unfunded amount
-        return (a.target - a.current) - (b.target - b.current);
-      } else {
-        // Neither are purchased, sort by target
-        return b.target - a.target;
-      }
-    });
-
     this.budgets.save(this.budget);
   }
 }

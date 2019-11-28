@@ -17,7 +17,6 @@ import { MultiBudgetListComponent } from './multi-budget-list/multi-budget-list.
 import { Budgets } from './shared/services/budgets.service';
 import { environment } from '../environments/environment';
 import { UserLoginComponent } from './user-login/user-login.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CreateBudgetComponent } from './create-budget/create-budget.component';
 import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.component';
 
@@ -38,7 +37,6 @@ import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.
   imports: [
     BrowserModule,
     FormsModule,
-    DragDropModule,
     MatProgressBarModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

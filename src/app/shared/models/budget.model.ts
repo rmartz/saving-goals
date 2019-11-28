@@ -1,5 +1,4 @@
-import { Goal, IGoal } from './goal.model';
-import { swapItems } from '../utils/ordering';
+import { Goal, IGoal, GoalStatus } from './goal.model';
 import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
@@ -217,14 +216,12 @@ export class Budget implements IBudget {
 
   public sortGoals() {
     this.goals.sort((a, b) => {
-      if (a.isPurchased() !== b.isPurchased()) {
-        // If one of the goals is purchased, place the purchased one on top
-        if (a.isPurchased()) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else if (a.isPurchased()) {
+      const aStatus = a.status();
+      const bStatus = b.status();
+      if (aStatus !== bStatus) {
+        return aStatus - bStatus;
+      }
+      if (aStatus == GoalStatus.Purchased) {
         // Both are purchased, sort by remaining unfunded amount
         return (a.target - a.current) - (b.target - b.current);
       } else {

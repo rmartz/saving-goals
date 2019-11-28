@@ -1,6 +1,11 @@
 import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
 
+export enum GoalStatus {
+  Earmarked,
+  Purchased,
+  Normal
+}
 
 export interface IGoalBase {
   label: string;
@@ -154,5 +159,15 @@ export class Goal implements IGoal {
 
   public isEarmarked(): boolean {
     return this.earmarked && !this.isPurchased();
+  }
+
+  public status(): GoalStatus {
+    if (this.isEarmarked()) {
+      return GoalStatus.Earmarked;
+    } else if (this.isPurchased()) {
+      return GoalStatus.Purchased;
+    } else {
+      return GoalStatus.Normal;
+    }
   }
 }

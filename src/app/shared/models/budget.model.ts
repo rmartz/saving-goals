@@ -214,4 +214,23 @@ export class Budget implements IBudget {
     const sum = weightedGoals.reduce((a, b) => a + b[1], 0);
     return weightedGoals.map<[Goal, number]>(value => [value[0], value[1] / sum]);
   }
+
+  public sortGoals() {
+    this.goals.sort((a, b) => {
+      if (a.isPurchased() !== b.isPurchased()) {
+        // If one of the goals is purchased, place the purchased one on top
+        if (a.isPurchased()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      } else if (a.isPurchased()) {
+        // Both are purchased, sort by remaining unfunded amount
+        return (a.target - a.current) - (b.target - b.current);
+      } else {
+        // Neither are purchased, sort by target
+        return b.target - a.target;
+      }
+    });
+  }
 }

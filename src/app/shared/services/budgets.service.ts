@@ -100,6 +100,7 @@ export class Budgets {
   }
 
   public save(budget: Budget) {
+    budget.sortGoals();
     this.afAuth.user.pipe(
       first()
     ).subscribe(user => {

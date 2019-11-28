@@ -221,7 +221,7 @@ export class Budget implements IBudget {
       if (aStatus !== bStatus) {
         return aStatus - bStatus;
       }
-      if (aStatus == GoalStatus.Purchased) {
+      if (aStatus === GoalStatus.Purchased) {
         // Both are purchased, sort by remaining unfunded amount
         return (a.target - a.current) - (b.target - b.current);
       } else {

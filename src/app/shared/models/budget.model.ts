@@ -164,16 +164,18 @@ export class Budget implements IBudget {
     }
 
     // Calculate how much can be contributed from remaining balances, ensuring that no goal pushes the total above its per-loan cap.
-    return loaners.reduce(
-      (sum, loaner) => Math.max(
-        sum,
-        Math.min(
+    const recipientLoaner = loaners.find(loaner => loaner.goal === recipient)
+    return (recipientLoaner ? recipientLoaner.available : recipient.current) + loaners.filter(
+        loaner => loaner.goal !== recipient
+      ).sort(
+        (a, b) => a.goal.target - b.goal.target
+      ).reduce(
+      (sum, loaner) => Math.min(
           // Return the lesser of the max this goal can contribute up to,
           // and what this goal has savings left to add to the running sum.
           // If the goal doesn't have enough saved to max itself out, it will contribute whatever it can to help.
           loaner.goal.target,
-          sum + (loaner.goal === recipient ? loaner.available : Math.min(loaner.available, loaner.maxLoan))
-        )
+          sum + Math.min(loaner.available, loaner.maxLoan)
       ),
       0
     );

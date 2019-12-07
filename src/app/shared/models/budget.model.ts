@@ -51,6 +51,20 @@ export class Budget implements IBudget {
     }).reduce((a, b) => a + b, 0);
   }
 
+  private isLiabilityFor(liability: Goal, target: Goal): boolean {
+    return (
+      // A goal cannot be a liability for itself
+      (liability !== target && (
+        // Purchased and overdrawn goals are presumptive liabilties
+        (liability.isOverdrawn()
+        ) || (
+          // Earmarked goals are liabilities for any non-purchased goal
+          !target.purchased && liability.earmarked
+        )
+        ))
+    );
+  }
+
   public loanableBalance(recipient: Goal): number {
     // Calculating how much can be safely loaned to a goal is relatively complicated
     // To help simplify the already complex relationships, we assume that all goals accrue savings at the same rate.
@@ -80,7 +94,7 @@ export class Budget implements IBudget {
     }
 
     let liabilities: LiabilityGoal[] = this.goals.filter(
-      goal => ((goal.isOverdrawn() || (!recipient.purchased && goal.earmarked)) && goal !== recipient)
+      liability => this.isLiabilityFor(liability, recipient)
     ).map<LiabilityGoal>(goal => ({
         goal: goal,
         debt: goal.target - goal.current,
@@ -90,7 +104,7 @@ export class Budget implements IBudget {
     // loaners is a list of [available to lend, max per loan]
     const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || goal === recipient || recipient.purchased)
+      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || (goal === recipient) || recipient.purchased)
     ).map<LoanerGoal>(
       goal => ({
         goal: goal,
@@ -101,6 +115,7 @@ export class Budget implements IBudget {
 
     // Calculate what portion of each loaning goal is already earmarked
     for (const loaner of loaners) {
+      // Remove any liabilities that have been fully covered
       liabilities = liabilities.filter(liability => liability.accounted < liability.debt);
       if (liabilities.length === 0) {
         break;
@@ -157,7 +172,7 @@ export class Budget implements IBudget {
           // and what this goal has savings left to add to the running sum.
           // If the goal doesn't have enough saved to max itself out, it will contribute whatever it can to help.
           loaner.goal.target,
-          sum + loaner.available
+          sum + (loaner.goal === recipient ? loaner.available : Math.min(loaner.available, loaner.maxLoan))
         )
       ),
       0

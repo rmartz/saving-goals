@@ -164,7 +164,7 @@ export class Budget implements IBudget {
     }
 
     // Calculate how much can be contributed from remaining balances, ensuring that no goal pushes the total above its per-loan cap.
-    const recipientLoaner = loaners.find(loaner => loaner.goal === recipient)
+    const recipientLoaner = loaners.find(loaner => loaner.goal === recipient);
     return (recipientLoaner ? recipientLoaner.available : recipient.current) + loaners.filter(
         loaner => loaner.goal !== recipient
       ).sort(

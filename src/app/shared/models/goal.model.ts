@@ -2,6 +2,7 @@ import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
 
 export enum GoalStatus {
+  Funded,
   Earmarked,
   Purchased,
   Normal
@@ -162,7 +163,9 @@ export class Goal implements IGoal {
   }
 
   public status(): GoalStatus {
-    if (this.isEarmarked()) {
+    if (this.isFunded()) {
+      return GoalStatus.Funded;
+    } else if (this.isEarmarked()) {
       return GoalStatus.Earmarked;
     } else if (this.isPurchased()) {
       return GoalStatus.Purchased;

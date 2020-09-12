@@ -26,15 +26,25 @@
   </span>
 
   <div *ngIf="!this.goal?.purchased">
-    <label for="goalEarmark">
-      Earmark
+    <strong>Goal Behavior</strong>
+    <br />
+    <input id="goalBehaviorDefault" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="">
+    <label for="goalBehaviorDefault"
+      title="By default, goals will loan other goals funds safely, in a way that they can be purchased once fully funded">
+      Normal ⓘ
     </label>
-    <input
-      id="goalEarmark"
-      name="goalEarmark"
-      type="checkbox"
-      [(ngModel)]="earmarked"
-      value="Earmarked">
+    <br />
+    <input id="goalBehaviorEarmarked" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="EARMARKED">
+    <label for="goalBehaviorEarmarked"
+    title="Earmarked goals are placed at the top of the list and try to reserve funds like they have already been purchased">
+      Earmarked ⓘ
+    </label>
+    <br />
+    <input id="goalBehaviorPaused" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="PAUSED">
+    <label for="goalBehaviorPaused"
+      title="Paused goals are skipped when adding funds, but will continue to safely loan funds they already have to other goals">
+      Paused ⓘ
+    </label>
   </div>
 
   <button

@@ -1,4 +1,4 @@
-import { Goal, IGoal, GoalStatus } from './goal.model';
+import { Goal, IGoal, GoalStatus, GoalBehavior } from './goal.model';
 import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
@@ -59,7 +59,7 @@ export class Budget implements IBudget {
         (liability.isOverdrawn()
         ) || (
           // Earmarked goals are liabilities for any non-purchased goal
-          !target.purchased && liability.earmarked
+          !target.purchased && liability.isEarmarked()
         )
         ))
     );
@@ -104,7 +104,7 @@ export class Budget implements IBudget {
     // loaners is a list of [available to lend, max per loan]
     const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.earmarked || (goal === recipient) || recipient.purchased)
+      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.isEarmarked() || (goal === recipient) || recipient.purchased)
     ).map<LoanerGoal>(
       goal => ({
         goal: goal,

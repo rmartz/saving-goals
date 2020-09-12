@@ -8,6 +8,12 @@ export enum GoalStatus {
   Normal
 }
 
+export enum GoalBehavior {
+  Default = '',
+  Paused = 'PAUSED',
+  Earmarked = 'EARMARKED',
+}
+
 export interface IGoalBase {
   label: string;
   version: number;
@@ -45,6 +51,7 @@ export class IGoalV2 extends IGoalV1 {
       return start as IGoalV2;
     }
 
+    // IGoalV2 is a direct forwards version of IGoalV1, and can be converted in place
     const end = IGoalV1.fromJSON(start) as IGoalV2;
     end.version = this.VERSION;
     end.earmarked = false;
@@ -52,7 +59,34 @@ export class IGoalV2 extends IGoalV1 {
   }
 }
 
-export class IGoal extends IGoalV2 { }
+export class IGoalV3 extends IGoalV1 {
+  public static VERSION = 3;
+
+  behavior: GoalBehavior;
+
+  public static fromJSON(start: IGoalBase): IGoalV3 {
+    if (start.version > this.VERSION) {
+      throw new Error('Unexpected Goal version');
+    }
+    if (start.version === this.VERSION) {
+      return start as IGoalV3;
+    }
+
+    const v2 = IGoalV2.fromJSON(start);
+    return {
+      version: this.VERSION,
+      label: v2.label,
+      target: v2.target,
+      current: v2.current,
+      created: v2.created,
+      purchased: v2.purchased,
+      closed: v2.closed,
+      behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
+    }
+  }
+}
+
+export class IGoal extends IGoalV3 { }
 export class IGoalFirebase extends IGoal {
   // Define these as type "any" so we can call .toDate()
   // Importing the actual firebase.firestore.Timestamp type fails on production
@@ -66,7 +100,8 @@ export class Goal implements IGoal {
   target: number;
   current: number;
   version: number;
-  earmarked: boolean;
+  behavior: GoalBehavior;
+  paused: boolean;
 
   created: Date;
   purchased: Date;
@@ -107,7 +142,7 @@ export class Goal implements IGoal {
      version: this.version,
      target: this.target,
      current: this.current,
-     earmarked: this.earmarked,
+     behavior: this.behavior,
      created: this.created
     };
     if (this.purchased !== undefined) {
@@ -131,6 +166,9 @@ export class Goal implements IGoal {
   }
 
   public purchase(cost: number) {
+    if (this.behavior === GoalBehavior.Paused) {
+      this.behavior = GoalBehavior.Default;
+    }
     this.target = cost;
     this.purchased = new Date();
   }
@@ -140,8 +178,8 @@ export class Goal implements IGoal {
   }
 
   public isActive(): boolean {
-    // A goal is active if it hasn't met its target yet
-    return !this.isFunded();
+    // A goal is active if it hasn't met its target yet and is not manually paused
+    return !this.isFunded() && !this.isPaused();
   }
 
   public isPurchased(): boolean {
@@ -159,7 +197,11 @@ export class Goal implements IGoal {
   }
 
   public isEarmarked(): boolean {
-    return this.earmarked && !this.isPurchased();
+    return this.behavior === GoalBehavior.Earmarked && !this.isPurchased();
+  }
+
+  public isPaused(): boolean {
+    return this.behavior === GoalBehavior.Paused && !this.isPurchased();
   }
 
   public status(): GoalStatus {

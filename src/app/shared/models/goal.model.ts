@@ -82,7 +82,7 @@ export class IGoalV3 extends IGoalV1 {
       purchased: v2.purchased,
       closed: v2.closed,
       behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
-    }
+    };
   }
 }
 

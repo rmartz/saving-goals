@@ -210,6 +210,10 @@ ul.budget-list {
   border: 2px solid #333;
 }
 
+.goal-item-paused .goal-item-detail-content {
+  color: #a0a0a0;
+}
+
 .budget-column:not(:last-child) {
   border-right: 1px solid #b0b0b0;
   border-top: 1px solid #b0b0b0;

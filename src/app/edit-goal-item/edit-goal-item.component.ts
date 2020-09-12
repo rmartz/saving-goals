@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Goal } from '../shared/models/goal.model';
+import { Goal, GoalBehavior } from '../shared/models/goal.model';
 import { Budgets } from '../shared/services/budgets.service';
 import { Budget } from '../shared/models/budget.model';
 
@@ -20,7 +20,7 @@ export class EditGoalItemComponent implements OnInit {
 
   public name: string;
   public target: number;
-  public earmarked = false;
+  public behavior = GoalBehavior.Default;
 
   constructor(private budgets: Budgets) { }
 
@@ -28,7 +28,7 @@ export class EditGoalItemComponent implements OnInit {
     if (this.goal !== undefined) {
       this.name = this.goal.label;
       this.target = parseFloat((this.goal.target / 100).toFixed(2));
-      this.earmarked = this.goal.earmarked;
+      this.behavior = this.goal.behavior;
     }
   }
 
@@ -39,7 +39,7 @@ export class EditGoalItemComponent implements OnInit {
     }
     goal.label = this.name;
     goal.target = Math.round(this.target * 100);
-    goal.earmarked = this.earmarked;
+    goal.behavior = this.behavior;
     goal.save();
 
     this.budgets.save(goal.budget);

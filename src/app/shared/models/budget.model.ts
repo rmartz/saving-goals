@@ -238,13 +238,8 @@ export class Budget implements IBudget {
       if (aStatus !== bStatus) {
         return aStatus - bStatus;
       }
-      if (aStatus === GoalStatus.Purchased) {
-        // Both are purchased, sort by remaining unfunded amount
-        return (a.target - a.current) - (b.target - b.current);
-      } else {
-        // Neither are purchased, sort by target
-        return b.target - a.target;
-      }
+      // For goals within the same grouping, sort by greatest target goal first
+      return b.target - a.target;
     });
   }
 }

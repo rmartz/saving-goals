@@ -101,10 +101,9 @@ export class Budget implements IBudget {
         accounted: 0
       })
     );
-    // loaners is a list of [available to lend, max per loan]
     const loaners: LoanerGoal[] = this.goals.filter(
       // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
-      goal => !goal.isPurchased() && !goal.isFunded() && (!goal.isEarmarked() || (goal === recipient) || recipient.purchased)
+      goal => goal.canLoanTo(recipient)
     ).map<LoanerGoal>(
       goal => ({
         goal: goal,

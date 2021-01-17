@@ -215,4 +215,25 @@ export class Goal implements IGoal {
       return GoalStatus.Normal;
     }
   }
+
+  public canLoanTo(recipient: Goal): boolean {
+    if (recipient == this) {
+      // A goal can always "loan" to itself
+      return true;
+    }
+    if (this.isFunded()) {
+      // A funded goal has no capacity to loan to other goals
+      return false
+    }
+    if (this.isPurchased()) {
+      // Purchased goals have a negative balance and cannot loan to any other goal
+      return false;
+    }
+    if (this.isEarmarked()) {
+      // Earmarked goals can only loan to cover balance of already purchased goals
+      return recipient.isPurchased();
+    }
+    // If any of the other situations don't exist, then it's safe for this goal to loan to any goal
+    return true;
+  }
 }

@@ -19,15 +19,15 @@ export class Budget implements IBudget {
 
   public static fromJSON(json: IBudget): Budget {
     const budget = new Budget();
-    budget.label = json['label'];
-    budget.owner = json['owner'];
-    budget.id = json['id'];
+    budget.label = json.label;
+    budget.owner = json.owner;
+    budget.id = json.id;
 
-    for (const goalJson of json['goals']) {
+    for (const goalJson of json.goals) {
       const goal = Goal.fromJSON(budget, goalJson);
       budget.goals.push(goal);
     }
-    for (const goalJson of json['archived'] || []) {
+    for (const goalJson of json.archived || []) {
       const goal = Goal.fromJSON(budget, goalJson);
       budget.archived.push(goal);
     }
@@ -36,11 +36,11 @@ export class Budget implements IBudget {
 
   public toJSON(): IBudget {
     return {
+      archived: this.archived.map(goal => goal.toJSON()),
+      goals: this.goals.map(goal => goal.toJSON()),
+      id: this.id,
       label: this.label,
       owner: this.owner,
-      id: this.id,
-      goals: this.goals.map(goal => goal.toJSON()),
-      archived: this.archived.map(goal => goal.toJSON())
     };
   }
 
@@ -96,9 +96,9 @@ export class Budget implements IBudget {
     let liabilities: LiabilityGoal[] = this.goals.filter(
       liability => this.isLiabilityFor(liability, recipient)
     ).map<LiabilityGoal>(goal => ({
-        goal: goal,
+        accounted: 0,
         debt: goal.target - goal.current,
-        accounted: 0
+        goal: goal,
       })
     );
     // loaners is a list of [available to lend, max per loan]
@@ -107,8 +107,8 @@ export class Budget implements IBudget {
       goal => !goal.isPurchased() && !goal.isFunded() && (!goal.isEarmarked() || (goal === recipient) || recipient.purchased)
     ).map<LoanerGoal>(
       goal => ({
-        goal: goal,
         available: goal.current,
+        goal: goal,
         maxLoan: goal.target - goal.current
       })
     ).sort((a, b) => a.maxLoan - b.maxLoan);

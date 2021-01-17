@@ -47,8 +47,8 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public impedeGoal(): boolean {
     // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
-    const available_balance = this.goal.budget.loanableBalance(this.goal);
+    const availableBalance = this.goal.budget.loanableBalance(this.goal);
 
-    return (this.cost * 100) - this.goal.current > available_balance;
+    return (this.cost * 100) - this.goal.current > availableBalance;
   }
 }

@@ -20,8 +20,6 @@ export class ActionConfirmComponent {
 
   public confirmMode = false;
 
-  constructor() { }
-
   public confirm() {
     this.confirmMode = false;
     this.confirmed.emit();

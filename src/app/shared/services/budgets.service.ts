@@ -11,10 +11,10 @@ import { swapItems } from '../utils/ordering';
 @Injectable()
 export class Budgets {
 
-  private _budgets: Budget[] = [];
+  private budgets: Budget[] = [];
   private budgetCollection: AngularFirestoreCollection<IBudget>;
-  private _listBS = new BehaviorSubject<Budget[]>([]);
-  private _list: Observable<Budget[]>;
+  private listBS = new BehaviorSubject<Budget[]>([]);
+  private list: Observable<Budget[]>;
 
   constructor(private afAuth: AngularFireAuth,
               private readonly afs: AngularFirestore) {
@@ -33,7 +33,7 @@ export class Budgets {
       if (user === null) {
         // Remove budgets that have an assigned ID - local storage only items won't have one
         // This avoids clearing local storage items on initial load
-        this._budgets = this._budgets.filter(budget => budget.id === undefined);
+        this.budgets = this.budgets.filter(budget => budget.id === undefined);
         this.saveBudgetsLocalStorage();
       } else {
         // Check if the user has budgets configured... if not, save their local budgets remotely
@@ -43,18 +43,18 @@ export class Budgets {
             if (budgets.length === 0) {
               // There are no budgets saved remotely... copy over any local budgets
               console.log('Creating remote copy of local budgets');
-              this._budgets.forEach(budget => this.save(budget));
+              this.budgets.forEach(budget => this.save(budget));
             }
           })
         ).subscribe();
       }
     });
 
-    this._list = newUserObs.pipe(
+    this.list = newUserObs.pipe(
       switchMap(user => {
         if (user === null) {
           // We are not logged in to Firebase, so use our BehaviorSubject for Budget management
-          return this._listBS.asObservable();
+          return this.listBS.asObservable();
         } else {
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
@@ -70,12 +70,12 @@ export class Budgets {
   public create(label: string) {
     const budget = new Budget();
     budget.label = label;
-    this._budgets.push(budget);
+    this.budgets.push(budget);
     this.save(budget);
   }
 
   public delete(budget: Budget) {
-    setMembership(this._budgets, budget, false);
+    setMembership(this.budgets, budget, false);
 
     this.afAuth.user.pipe(
       first()
@@ -94,9 +94,9 @@ export class Budgets {
 
   private saveBudgetsLocalStorage() {
     localStorage.setItem('budgets', JSON.stringify(
-      this._budgets.map(budget => budget.toJSON())
+      this.budgets.map(budget => budget.toJSON())
     ));
-    this._listBS.next(this._budgets);
+    this.listBS.next(this.budgets);
   }
 
   public save(budget: Budget) {
@@ -120,24 +120,24 @@ export class Budgets {
   }
 
   public list(): Observable<Budget[]> {
-    return this._list;
+    return this.list;
   }
 
   public moveUp(budget: Budget) {
-    const index = this._budgets.indexOf(budget);
+    const index = this.budgets.indexOf(budget);
     if (index <= 0) {
       return;
     }
-    swapItems(this._budgets, index, index - 1);
+    swapItems(this.budgets, index, index - 1);
     this.saveBudgetsLocalStorage();
   }
 
   public moveDown(budget: Budget) {
-    const index = this._budgets.indexOf(budget);
-    if (index < 0 || index + 1 >= this._budgets.length) {
+    const index = this.budgets.indexOf(budget);
+    if (index < 0 || index + 1 >= this.budgets.length) {
       return;
     }
-    swapItems(this._budgets, index, index + 1);
+    swapItems(this.budgets, index, index + 1);
     this.saveBudgetsLocalStorage();
   }
 
@@ -146,10 +146,10 @@ export class Budgets {
       const savedBudgets = JSON.parse(json);
       for (const budgetJson of savedBudgets) {
         const budget = Budget.fromJSON(budgetJson);
-        this._budgets.push(budget);
+        this.budgets.push(budget);
       }
 
-      this._listBS.next(this._budgets);
+      this.listBS.next(this.budgets);
     }
   }
 }

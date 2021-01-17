@@ -74,14 +74,14 @@ export class IGoalV3 extends IGoalV1 {
 
     const v2 = IGoalV2.fromJSON(start);
     return {
-      version: this.VERSION,
-      label: v2.label,
-      target: v2.target,
-      current: v2.current,
-      created: v2.created,
-      purchased: v2.purchased,
-      closed: v2.closed,
       behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
+      closed: v2.closed,
+      created: v2.created,
+      current: v2.current,
+      label: v2.label,
+      purchased: v2.purchased,
+      target: v2.target,
+      version: this.VERSION,
     };
   }
 }
@@ -138,18 +138,18 @@ export class Goal implements IGoal {
 
   public toJSON(): IGoal {
     const data: IGoal = {
-     label: this.label,
-     version: this.version,
-     target: this.target,
-     current: this.current,
-     behavior: this.behavior,
-     created: this.created
+      behavior: this.behavior,
+      created: this.created,
+      current: this.current,
+      label: this.label,
+      target: this.target,
+      version: this.version,
     };
     if (this.purchased !== undefined) {
-      data['purchased'] = this.purchased;
+      data.purchased = this.purchased;
     }
     if (this.closed !== undefined) {
-      data['closed'] = this.closed;
+      data.closed = this.closed;
     }
     return data;
   }

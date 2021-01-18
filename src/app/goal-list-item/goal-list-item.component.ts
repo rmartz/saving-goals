@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Goal } from '../shared/models/goal.model';
 import { Budgets } from '../shared/services/budgets.service';
+import { loanableBalance } from '../shared/utils/loaning';
 
 enum GoalListItemMode {
   Default,
@@ -28,7 +29,7 @@ export class GoalListItemComponent {
 
   public goalAffordable(): boolean {
     // Calculate the loanable balance that might be able to complete this goal
-    this.loanableBalance = this.goal.budget.loanableBalance(this.goal);
+    this.loanableBalance = loanableBalance(this.goal.budget, this.goal);
 
     if (this.goal.isOverdrawn()) {
       return false;

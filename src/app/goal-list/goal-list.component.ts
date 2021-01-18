@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Budget } from '../shared/models/budget.model';
 import { Budgets } from '../shared/services/budgets.service';
+import { disperseBalance } from '../shared/utils/dispersement';
 
 @Component({
   selector: 'app-goal-list',
@@ -19,7 +20,7 @@ export class GoalListComponent {
 
   public disperse(amount: number) {
     const amountCents = Math.round(amount * 100);
-    this.budget.disperse(amountCents);
+    disperseBalance(this.budget, amountCents);
     this.budgets.save(this.budget);
   }
 }

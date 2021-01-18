@@ -57,7 +57,7 @@ export class Budgets {
           // We are not logged in to Firebase, so use our BehaviorSubject for Budget management
           return this.listBS.asObservable();
         } else if (!this.budgetCollection) {
-          throw new Error("User is logged in but has no budget collection");
+          throw new Error('User is logged in but has no budget collection');
         } else {
           // Subscribe to the remote budgets for local management
           return this.budgetCollection.valueChanges().pipe(
@@ -90,7 +90,7 @@ export class Budgets {
         if (budget.id === undefined) {
           console.error('Attempted to delete budget without an ID');
         } else if (!this.budgetCollection) {
-          throw Error("User is signed in but has no budget collection")
+          throw Error('User is signed in but has no budget collection');
         } else {
           this.budgetCollection.doc(budget.id).delete();
         }
@@ -122,7 +122,7 @@ export class Budgets {
         }
 
         if (!this.budgetCollection) {
-          throw Error("User is signed in but has no budget collection")
+          throw Error('User is signed in but has no budget collection');
         } else {
           this.budgetCollection.doc(budget.id).set(budget.toJSON());
         }

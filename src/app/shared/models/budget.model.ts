@@ -87,12 +87,12 @@ export class Budget implements IBudget {
     // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
     // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
-    type LiabilityGoal = {
+    interface LiabilityGoal {
       goal: Goal;
       debt: number;
       accounted: number;
     }
-    type LoanerGoal = {
+    interface LoanerGoal {
       goal: Goal;
       available: number;
       maxLoan: number;

@@ -16,17 +16,17 @@ export enum GoalBehavior {
 
 type IGoalBase = IGoalV1 | IGoalV2 | IGoalV3;
 
-type IGoalV1 = {
-  version: 1,
+interface IGoalV1 {
+  version: 1;
 
-  label: string,
-  target: number,
-  current: number,
+  label: string;
+  target: number;
+  current: number;
 
-  created: Date,
-  purchased?: Date,
-  closed?: Date
-};
+  created: Date;
+  purchased?: Date;
+  closed?: Date;
+}
 
 function jsonToIGoalV1(start: IGoalBase): IGoalV1 {
   if (start.version !== 1) {
@@ -35,17 +35,17 @@ function jsonToIGoalV1(start: IGoalBase): IGoalV1 {
   return start;
 }
 
-type IGoalV2 = {
-  version: 2,
+interface IGoalV2 {
+  version: 2;
 
-  label: string,
-  target: number,
-  current: number,
-  earmarked: boolean,
+  label: string;
+  target: number;
+  current: number;
+  earmarked: boolean;
 
-  created: Date,
-  purchased?: Date,
-  closed?: Date
+  created: Date;
+  purchased?: Date;
+  closed?: Date;
 }
 
 function jsonToIGoalV2(start: IGoalBase): IGoalV2 {
@@ -58,22 +58,22 @@ function jsonToIGoalV2(start: IGoalBase): IGoalV2 {
 
   return {
     ...jsonToIGoalV1(start),
+    earmarked: false,
     version: 2,
-    earmarked: false
-  }
+  };
 }
 
-export type IGoalV3 = {
-  version: 3,
+interface IGoalV3 {
+  version: 3;
 
-  label: string,
-  target: number,
-  current: number,
-  behavior: GoalBehavior,
+  label: string;
+  target: number;
+  current: number;
+  behavior: GoalBehavior;
 
-  created: Date,
-  purchased?: Date,
-  closed?: Date
+  created: Date;
+  purchased?: Date;
+  closed?: Date;
 }
 
 function jsonToIGoalV3(start: IGoalBase): IGoalV3 {
@@ -87,24 +87,15 @@ function jsonToIGoalV3(start: IGoalBase): IGoalV3 {
   const v2 = jsonToIGoalV2(start);
   return {
     ...v2,
-    version: 3,
     behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
+    version: 3,
   };
 }
 
-export type IGoal = IGoalV3
+export type IGoal = IGoalV3;
 
 function jsonToIGoal(start: IGoalBase): IGoal {
   return jsonToIGoalV3(start);
-}
-
-
-type IGoalFirebase = IGoal & {
-  // Define these as type "any" so we can call .toDate()
-  // Importing the actual firebase.firestore.Timestamp type fails on production
-  created: any;
-  purchased?: any;
-  closed?: any;
 }
 
 export class Goal implements IGoal {

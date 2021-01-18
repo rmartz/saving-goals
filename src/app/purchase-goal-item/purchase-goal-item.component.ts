@@ -15,7 +15,7 @@ export class PurchaseGoalItemComponent implements OnInit {
   @Output()
   public close = new EventEmitter();
 
-  public cost: number = 0;
+  public cost = 0;
 
   constructor(private budgets: Budgets) { }
 

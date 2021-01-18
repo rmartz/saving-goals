@@ -19,7 +19,7 @@ export class EditGoalItemComponent implements OnInit {
   @Output()
   public close = new EventEmitter();
 
-  public name: string = '';
+  public name = '';
   public target?: number;
   public behavior = GoalBehavior.Default;
 
@@ -34,8 +34,8 @@ export class EditGoalItemComponent implements OnInit {
   }
 
   public save() {
-    if(!this.target) {
-      throw Error("Cannot save goal without a set target")
+    if (!this.target) {
+      throw Error('Cannot save goal without a set target');
     }
     const target = Math.round(this.target * 100);
     if (this.goal === undefined) {
@@ -46,7 +46,7 @@ export class EditGoalItemComponent implements OnInit {
       );
     } else {
       this.goal.label = this.name;
-      this.goal.target = target
+      this.goal.target = target;
     }
     this.goal.behavior = this.behavior;
     this.goal.save();
@@ -61,16 +61,16 @@ export class EditGoalItemComponent implements OnInit {
   }
 
   public delete() {
-    if(!this.goal) {
-      throw new Error("Goal to be deleted is undefined")
+    if (!this.goal) {
+      throw new Error('Goal to be deleted is undefined');
     }
     this.goal.budget.delete(this.goal);
     this.budgets.save(this.goal.budget);
   }
 
   public reversePurchase() {
-    if(!this.goal) {
-      throw new Error("Goal to be unpurchased is undefined")
+    if (!this.goal) {
+      throw new Error('Goal to be unpurchased is undefined');
     }
     this.goal.purchased = undefined;
     this.budgets.save(this.goal.budget);

@@ -9,12 +9,13 @@ import { Budgets } from '../shared/services/budgets.service';
 export class PurchaseGoalItemComponent implements OnInit {
 
   @Input()
+  // @ts-ignore(2564)
   public goal: Goal;
 
   @Output()
   public close = new EventEmitter();
 
-  public cost: number;
+  public cost = 0;
 
   constructor(private budgets: Budgets) { }
 
@@ -30,7 +31,7 @@ export class PurchaseGoalItemComponent implements OnInit {
     this.close.emit(this.goal);
   }
 
-  public cancel($event) {
+  public cancel($event: any) {
     $event.preventDefault();
     this.close.emit(this.goal);
   }
@@ -47,8 +48,8 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public impedeGoal(): boolean {
     // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
-    const available_balance = this.goal.budget.loanableBalance(this.goal);
+    const availableBalance = this.goal.budget.loanableBalance(this.goal);
 
-    return (this.cost * 100) - this.goal.current > available_balance;
+    return (this.cost * 100) - this.goal.current > availableBalance;
   }
 }

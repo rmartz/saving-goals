@@ -8,6 +8,7 @@ import { Budgets } from '../shared/services/budgets.service';
 })
 export class GoalListComponent {
   @Input()
+  // @ts-ignore(2564)
   public budget: Budget;
 
   public showDispersement = false;

@@ -20,7 +20,7 @@ export class CreateBudgetComponent {
     this.close.emit();
   }
 
-  public cancel($event) {
+  public cancel($event: any) {
     $event.preventDefault();
     this.newBudgetName = '';
     this.close.emit();

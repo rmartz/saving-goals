@@ -9,9 +9,12 @@ import { Budgets } from '../shared/services/budgets.service';
 export class BudgetDisplayComponent implements OnInit {
 
   @Input()
+  // @ts-ignore(2564)
   public budget: Budget;
 
   public editMode = false;
+
+  // @ts-ignore(2564)
   public budgetLabel: string;
 
   constructor(private budgets: Budgets) { }

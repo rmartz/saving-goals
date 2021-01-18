@@ -7,15 +7,19 @@ import { Budgets } from '../shared/services/budgets.service';
 })
 export class GoalProgressBarComponent {
   @Input()
+  // @ts-ignore(2564)
   public balance: number;
 
   @Input()
+  // @ts-ignore(2564)
   public available: number;
 
   @Input()
+  // @ts-ignore(2564)
   public target: number;
 
   @Input()
+  // @ts-ignore(2564)
   public purchased: boolean;
 
   constructor(public budgets: Budgets) { }

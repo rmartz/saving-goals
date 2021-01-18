@@ -3,31 +3,36 @@ import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
 export interface IBudget {
-  id: string;
+  id?: string;
   label: string;
-  owner: string;
+  owner?: string;
   goals: IGoal[];
   archived: IGoal[];
 }
 
 export class Budget implements IBudget {
-  id: string;
+  id?: string;
   label: string;
-  owner: string;
+  owner?: string;
   goals: Goal[] = [];
   archived: Goal[] = [];
 
-  public static fromJSON(json: IBudget): Budget {
-    const budget = new Budget();
-    budget.label = json['label'];
-    budget.owner = json['owner'];
-    budget.id = json['id'];
+  constructor(label: string) {
+    this.label = label;
+  }
 
-    for (const goalJson of json['goals']) {
+  public static fromJSON(json: IBudget): Budget {
+    const budget = new Budget(
+      json.label
+    );
+    budget.id = json.id;
+    budget.owner = json.owner;
+
+    for (const goalJson of json.goals) {
       const goal = Goal.fromJSON(budget, goalJson);
       budget.goals.push(goal);
     }
-    for (const goalJson of json['archived'] || []) {
+    for (const goalJson of json.archived || []) {
       const goal = Goal.fromJSON(budget, goalJson);
       budget.archived.push(goal);
     }
@@ -36,11 +41,11 @@ export class Budget implements IBudget {
 
   public toJSON(): IBudget {
     return {
+      archived: this.archived.map(goal => goal.toJSON()),
+      goals: this.goals.map(goal => goal.toJSON()),
+      id: this.id,
       label: this.label,
       owner: this.owner,
-      id: this.id,
-      goals: this.goals.map(goal => goal.toJSON()),
-      archived: this.archived.map(goal => goal.toJSON())
     };
   }
 
@@ -82,23 +87,23 @@ export class Budget implements IBudget {
     // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
     // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
-    class LiabilityGoal {
-      public goal: Goal;
-      public debt: number;
-      public accounted: number;
+    interface LiabilityGoal {
+      goal: Goal;
+      debt: number;
+      accounted: number;
     }
-    class LoanerGoal {
-      public goal: Goal;
-      public available: number;
-      public maxLoan: number;
+    interface LoanerGoal {
+      goal: Goal;
+      available: number;
+      maxLoan: number;
     }
 
     let liabilities: LiabilityGoal[] = this.goals.filter(
       liability => this.isLiabilityFor(liability, recipient)
     ).map<LiabilityGoal>(goal => ({
-        goal: goal,
+        accounted: 0,
         debt: goal.target - goal.current,
-        accounted: 0
+        goal: goal,
       })
     );
     // loaners is a list of [available to lend, max per loan]
@@ -107,8 +112,8 @@ export class Budget implements IBudget {
       goal => !goal.isPurchased() && !goal.isFunded() && (!goal.isEarmarked() || (goal === recipient) || recipient.purchased)
     ).map<LoanerGoal>(
       goal => ({
-        goal: goal,
         available: goal.current,
+        goal: goal,
         maxLoan: goal.target - goal.current
       })
     ).sort((a, b) => a.maxLoan - b.maxLoan);
@@ -191,7 +196,7 @@ export class Budget implements IBudget {
     setMembership(this.archived, goal, true);
   }
 
-  public disperse(total: number) {
+  public disperse(total: number): void {
     if (total <= 0) {
       // No value to contribute
       return;

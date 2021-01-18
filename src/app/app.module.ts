@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule} from '@angular/material/progress-bar';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -21,6 +21,7 @@ import { CreateBudgetComponent } from './create-budget/create-budget.component';
 import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.component';
 
 @NgModule({
+  bootstrap: [AppComponent],
   declarations: [
     ActionConfirmComponent,
     CreateBudgetComponent,
@@ -45,6 +46,5 @@ import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.
   providers: [
     Budgets
   ],
-  bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -7,9 +7,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class ActionConfirmComponent {
 
   @Input()
+  // @ts-ignore(2564)
   public prompt: string;
 
   @Input()
+  // @ts-ignore(2564)
   public displayClass: string;
 
   @Output()
@@ -19,8 +21,6 @@ export class ActionConfirmComponent {
   public canceled = new EventEmitter();
 
   public confirmMode = false;
-
-  constructor() { }
 
   public confirm() {
     this.confirmMode = false;

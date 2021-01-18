@@ -10,16 +10,17 @@ import { Budget } from '../shared/models/budget.model';
 export class EditGoalItemComponent implements OnInit {
 
   @Input()
+  // @ts-ignore(2564)
   public budget: Budget;
 
   @Input()
-  public goal: Goal;
+  public goal?: Goal;
 
   @Output()
   public close = new EventEmitter();
 
-  public name: string;
-  public target: number;
+  public name = '';
+  public target?: number;
   public behavior = GoalBehavior.Default;
 
   constructor(private budgets: Budgets) { }
@@ -33,30 +34,44 @@ export class EditGoalItemComponent implements OnInit {
   }
 
   public save() {
-    const goal = this.goal || new Goal();
-    if (this.goal === undefined) {
-      goal.budget = this.budget;
+    if (!this.target) {
+      throw Error('Cannot save goal without a set target');
     }
-    goal.label = this.name;
-    goal.target = Math.round(this.target * 100);
-    goal.behavior = this.behavior;
-    goal.save();
+    const target = Math.round(this.target * 100);
+    if (this.goal === undefined) {
+      this.goal = new Goal(
+        this.budget,
+        this.name,
+        target
+      );
+    } else {
+      this.goal.label = this.name;
+      this.goal.target = target;
+    }
+    this.goal.behavior = this.behavior;
+    this.goal.save();
 
-    this.budgets.save(goal.budget);
-    this.close.emit(goal);
+    this.budgets.save(this.goal.budget);
+    this.close.emit(this.goal);
   }
 
-  public cancel($event) {
+  public cancel($event: any) {
     $event.preventDefault();
     this.close.emit(this.goal);
   }
 
   public delete() {
+    if (!this.goal) {
+      throw new Error('Goal to be deleted is undefined');
+    }
     this.goal.budget.delete(this.goal);
     this.budgets.save(this.goal.budget);
   }
 
   public reversePurchase() {
+    if (!this.goal) {
+      throw new Error('Goal to be unpurchased is undefined');
+    }
     this.goal.purchased = undefined;
     this.budgets.save(this.goal.budget);
   }

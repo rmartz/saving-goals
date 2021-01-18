@@ -3,25 +3,30 @@ import { roundRandom } from '../utils/round';
 import { setMembership } from '../utils/membership';
 
 export interface IBudget {
-  id: string;
+  id?: string;
   label: string;
-  owner: string;
+  owner?: string;
   goals: IGoal[];
   archived: IGoal[];
 }
 
 export class Budget implements IBudget {
-  id: string;
+  id?: string;
   label: string;
-  owner: string;
+  owner?: string;
   goals: Goal[] = [];
   archived: Goal[] = [];
 
+  constructor(label: string) {
+    this.label = label;
+  }
+
   public static fromJSON(json: IBudget): Budget {
-    const budget = new Budget();
-    budget.label = json.label;
-    budget.owner = json.owner;
+    const budget = new Budget(
+      json.label
+    );
     budget.id = json.id;
+    budget.owner = json.owner;
 
     for (const goalJson of json.goals) {
       const goal = Goal.fromJSON(budget, goalJson);
@@ -82,15 +87,15 @@ export class Budget implements IBudget {
     // - In case a goal is over-leveraged, repeat the process from furthest to completion back, choosing which goals to over-leverage
     // - Once each goal's available balance has been calculated, iterate across all goals to determine what the most can be loaned
     //   (Ensuring that no goal contributes more than it can, or to a total beyond its remaining goal)
-    class LiabilityGoal {
-      public goal: Goal;
-      public debt: number;
-      public accounted: number;
+    type LiabilityGoal = {
+      goal: Goal;
+      debt: number;
+      accounted: number;
     }
-    class LoanerGoal {
-      public goal: Goal;
-      public available: number;
-      public maxLoan: number;
+    type LoanerGoal = {
+      goal: Goal;
+      available: number;
+      maxLoan: number;
     }
 
     let liabilities: LiabilityGoal[] = this.goals.filter(
@@ -191,7 +196,7 @@ export class Budget implements IBudget {
     setMembership(this.archived, goal, true);
   }
 
-  public disperse(total: number) {
+  public disperse(total: number): void {
     if (total <= 0) {
       // No value to contribute
       return;

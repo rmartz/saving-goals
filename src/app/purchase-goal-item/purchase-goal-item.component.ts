@@ -9,12 +9,13 @@ import { Budgets } from '../shared/services/budgets.service';
 export class PurchaseGoalItemComponent implements OnInit {
 
   @Input()
+  // @ts-ignore(2564)
   public goal: Goal;
 
   @Output()
   public close = new EventEmitter();
 
-  public cost: number;
+  public cost: number = 0;
 
   constructor(private budgets: Budgets) { }
 
@@ -30,7 +31,7 @@ export class PurchaseGoalItemComponent implements OnInit {
     this.close.emit(this.goal);
   }
 
-  public cancel($event) {
+  public cancel($event: any) {
     $event.preventDefault();
     this.close.emit(this.goal);
   }

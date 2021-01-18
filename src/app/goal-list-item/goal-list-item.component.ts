@@ -15,12 +15,14 @@ enum GoalListItemMode {
 })
 export class GoalListItemComponent {
   @Input()
+  // @ts-ignore(2564)
   public goal: Goal;
-  public safeBalance: number;
-  public unsafeBalance: number;
-  public loanableBalance: number;
 
-  public mode: GoalListItemMode;
+  public safeBalance?: number;
+  public unsafeBalance?: number;
+  public loanableBalance?: number;
+
+  public mode?: GoalListItemMode;
 
   constructor(public budgets: Budgets) { }
 

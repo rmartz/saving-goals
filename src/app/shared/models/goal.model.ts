@@ -14,80 +14,92 @@ export enum GoalBehavior {
   Earmarked = 'EARMARKED',
 }
 
-export interface IGoalBase {
-  label: string;
-  version: number;
+type IGoalBase = IGoalV1 | IGoalV2 | IGoalV3;
+
+type IGoalV1 = {
+  version: 1,
+
+  label: string,
+  target: number,
+  current: number,
+
+  created: Date,
+  purchased?: Date,
+  closed?: Date
+};
+
+function jsonToIGoalV1(start: IGoalBase): IGoalV1 {
+  if (start.version !== 1) {
+    throw new Error('Unexpected Goal version');
+  }
+  return start;
 }
 
-export class IGoalV1 implements IGoalBase {
-  public static VERSION = 1;
+type IGoalV2 = {
+  version: 2,
 
-  label: string;
-  target: number;
-  current: number;
-  version: number;
+  label: string,
+  target: number,
+  current: number,
+  earmarked: boolean,
 
-  created: Date;
-  purchased?: Date;
-  closed?: Date;
+  created: Date,
+  purchased?: Date,
+  closed?: Date
+}
 
-  public static fromJSON(start: IGoalBase): IGoalV1 {
-    const end = start as IGoalV1;
-    end.version = this.VERSION;
-    return end;
+function jsonToIGoalV2(start: IGoalBase): IGoalV2 {
+  if (start.version > 2) {
+    throw new Error('Unexpected Goal version');
+  }
+  if (start.version === 2) {
+    return start;
+  }
+
+  return {
+    ...jsonToIGoalV1(start),
+    version: 2,
+    earmarked: false
   }
 }
 
-export class IGoalV2 extends IGoalV1 {
-  public static VERSION = 2;
+export type IGoalV3 = {
+  version: 3,
 
-  earmarked: boolean;
+  label: string,
+  target: number,
+  current: number,
+  behavior: GoalBehavior,
 
-  public static fromJSON(start: IGoalBase): IGoalV2 {
-    if (start.version > this.VERSION) {
-      throw new Error('Unexpected Goal version');
-    }
-    if (start.version === this.VERSION) {
-      return start as IGoalV2;
-    }
-
-    // IGoalV2 is a direct forwards version of IGoalV1, and can be converted in place
-    const end = IGoalV1.fromJSON(start) as IGoalV2;
-    end.version = this.VERSION;
-    end.earmarked = false;
-    return end;
-  }
+  created: Date,
+  purchased?: Date,
+  closed?: Date
 }
 
-export class IGoalV3 extends IGoalV1 {
-  public static VERSION = 3;
-
-  behavior: GoalBehavior;
-
-  public static fromJSON(start: IGoalBase): IGoalV3 {
-    if (start.version > this.VERSION) {
-      throw new Error('Unexpected Goal version');
-    }
-    if (start.version === this.VERSION) {
-      return start as IGoalV3;
-    }
-
-    const v2 = IGoalV2.fromJSON(start);
-    return {
-      behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
-      closed: v2.closed,
-      created: v2.created,
-      current: v2.current,
-      label: v2.label,
-      purchased: v2.purchased,
-      target: v2.target,
-      version: this.VERSION,
-    };
+function jsonToIGoalV3(start: IGoalBase): IGoalV3 {
+  if (start.version > 3) {
+    throw new Error('Unexpected Goal version');
   }
+  if (start.version === 3) {
+    return start;
+  }
+
+  const v2 = jsonToIGoalV2(start);
+  return {
+    ...v2,
+    version: 3,
+    behavior: v2.earmarked ? GoalBehavior.Earmarked : GoalBehavior.Default,
+  };
 }
 
-export class IGoal extends IGoalV3 { }
-export class IGoalFirebase extends IGoal {
+export type IGoal = IGoalV3
+
+function jsonToIGoal(start: IGoalBase): IGoal {
+  return jsonToIGoalV3(start);
+}
+
+
+type IGoalFirebase = IGoal & {
   // Define these as type "any" so we can call .toDate()
   // Importing the actual firebase.firestore.Timestamp type fails on production
   created: any;
@@ -99,23 +111,26 @@ export class Goal implements IGoal {
   label: string;
   target: number;
   current: number;
-  version: number;
+  version: 3;
   behavior: GoalBehavior;
   paused: boolean;
 
   created: Date;
-  purchased: Date;
-  closed: Date;
+  purchased?: Date;
+  closed?: Date;
   budget: Budget;
 
   public static fromJSON(budget: Budget, json: IGoalBase) {
-    const latest: IGoal = IGoal.fromJSON(json);
+    const latest: IGoal = jsonToIGoal(json);
     latest.created = this.genericToDate(latest.created);
     latest.purchased = this.genericToDate(latest.purchased);
     latest.closed = this.genericToDate(latest.closed);
 
-    const goal = new Goal();
-    goal.budget = budget;
+    const goal = new Goal(
+      budget,
+      latest.label,
+      latest.target
+    );
     Object.assign(goal, latest);
     return goal;
   }
@@ -130,10 +145,16 @@ export class Goal implements IGoal {
     }
   }
 
-  constructor() {
+  constructor(budget: Budget, label: string, target: number) {
     this.current = 0;
-    this.version = IGoal.VERSION;
+    this.version = 3;
     this.created = new Date();
+    this.paused = false;
+    this.behavior = GoalBehavior.Default;
+
+    this.budget = budget;
+    this.label = label;
+    this.target = target;
   }
 
   public toJSON(): IGoal {

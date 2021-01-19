@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Goal } from '../shared/models/goal.model';
 import { Budgets } from '../shared/services/budgets.service';
+import { loanableBalance } from '../shared/utils/loaning';
 
 @Component({
   selector: 'app-purchase-goal-item',
@@ -48,7 +49,7 @@ export class PurchaseGoalItemComponent implements OnInit {
 
   public impedeGoal(): boolean {
     // Calculate the loanable balance, less the loanable amount for this goal to avoid double-counting
-    const availableBalance = this.goal.budget.loanableBalance(this.goal);
+    const availableBalance = loanableBalance(this.goal.budget, this.goal);
 
     return (this.cost * 100) - this.goal.current > availableBalance;
   }

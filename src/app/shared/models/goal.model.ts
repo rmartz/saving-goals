@@ -1,5 +1,6 @@
 import { Budget } from './budget.model';
 import { setMembership } from '../utils/membership';
+import { disperseBalance } from '../utils/dispersement';
 
 export enum GoalStatus {
   Funded,
@@ -173,7 +174,7 @@ export class Goal implements IGoal {
     if (this.current > this.target) {
       const difference = this.current - this.target;
       this.current -= difference;
-      this.budget.disperse(difference);
+      disperseBalance(this.budget, difference);
     }
   }
 

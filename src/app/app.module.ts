@@ -19,6 +19,7 @@ import { environment } from '../environments/environment';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { CreateBudgetComponent } from './create-budget/create-budget.component';
 import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.component';
+import { UserNavbarComponent } from './user-navbar/user-navbar.component';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -33,6 +34,7 @@ import { GoalProgressBarComponent } from './goal-progress-bar/goal-progress-bar.
     PurchaseGoalItemComponent,
     MultiBudgetListComponent,
     UserLoginComponent,
+    UserNavbarComponent,
     AppComponent
   ],
   imports: [

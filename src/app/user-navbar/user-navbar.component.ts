@@ -8,12 +8,12 @@ import { Budgets } from '../shared/services/budgets.service';
 export class UserNavbarComponent {
   public totalSaved?: number;
 
-  constructor(public budgets: Budgets) {
-    budgets.list().subscribe(budgets => {
+  constructor(public budgetsService: Budgets) {
+    budgetsService.list().subscribe(budgets => {
       this.totalSaved = budgets
         .map(budget => budget.totalBalance())
-        .reduce((balance, sum) => sum + balance, 0)
-    })
+        .reduce((balance, sum) => sum + balance, 0);
+    });
 
   }
 

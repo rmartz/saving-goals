@@ -9,7 +9,11 @@
       <button class="header-2" (click)="createMode = !createMode">Add goal +</button>
     </div>
     <div class="align-right">
-      Saved: {{(budget.totalBalance() / 100) | currency}}
+      <div class="budget-saved">
+        Saved: {{(budget.totalBalance() / 100) | currency}}
+        <br />
+        Loanable: {{(loanableBalance() / 100) | currency}}
+      </div>
       <button *ngIf="!showDispersement" (click)="showDispersement=true">
         Add
       </button>

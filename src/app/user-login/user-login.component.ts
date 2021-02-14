@@ -1,19 +1,19 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
+import firebase from 'firebase/app';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html'
 })
 export class UserLoginComponent {
-  constructor(public afAuth: AngularFireAuth) {  }
+  constructor(public auth: AngularFireAuth) {  }
 
   login() {
-    this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
   }
 
   logout() {
-    this.afAuth.auth.signOut();
+    this.auth.signOut();
   }
 }

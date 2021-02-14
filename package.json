@@ -26,7 +26,6 @@
     "core-js": "^2.6.10",
     "firebase": "^5.11.1",
     "rxjs": "^6.6.3",
-    "tslib": "^1.10.0",
     "zone.js": "^0.9.1"
   },
   "devDependencies": {

@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Budget } from '../shared/models/budget.model';
 import { Budgets } from '../shared/services/budgets.service';
 import { disperseBalance } from '../shared/utils/dispersement';
+import { loanableBalance } from '../shared/utils/loaning';
 
 @Component({
   selector: 'app-goal-list',
@@ -22,5 +23,9 @@ export class GoalListComponent {
     const amountCents = Math.round(amount * 100);
     disperseBalance(this.budget, amountCents);
     this.budgets.save(this.budget);
+  }
+
+  public loanableBalance() {
+    return loanableBalance(this.budget);
   }
 }

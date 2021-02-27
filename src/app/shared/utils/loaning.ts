@@ -13,25 +13,42 @@ interface Loaner {
 }
 
 
+enum LoanPrecedence {
+  Earmarked,
+  Normal,
+  Purchased,
+}
+
+function goalPrecedence(goal: Goal): LoanPrecedence {
+  if (goal.isEarmarked()) {
+    return LoanPrecedence.Earmarked;
+  } else if (goal.isPurchased()) {
+    return LoanPrecedence.Purchased;
+  } else {
+    return LoanPrecedence.Normal;
+  }
+}
+
 function canLoanTo(origin: Goal, recipient: Goal): boolean {
   if (recipient === origin) {
     // A goal can always "loan" to itself
     return true;
   }
   if (origin.isFunded()) {
-    // A funded goal has no capacity to loan to other goals
+    // A funded goal has zero loanable balance, so it effectively cannot loan
     return false;
   }
-  if (origin.isPurchased()) {
-    // Purchased goals have a negative balance and cannot loan to any other goal
-    return false;
+
+  const originStatus = goalPrecedence(origin);
+  const recipientStatus = goalPrecedence(recipient);
+
+  if (originStatus === LoanPrecedence.Normal) {
+    // Normal level goals can always loan to other goals
+    return true;
   }
-  if (origin.isEarmarked()) {
-    // Earmarked goals can only loan to cover balance of already purchased goals
-    return recipient.isPurchased();
-  }
-  // If any of the other situations don't exist, then it's safe for this goal to loan to any goal
-  return true;
+
+  // Non-normal goals only loan to goals at a higher precedence
+  return originStatus < recipientStatus;
 }
 
 function isLiabilityFor(liability: Goal, target: Goal): boolean {
@@ -39,16 +56,11 @@ function isLiabilityFor(liability: Goal, target: Goal): boolean {
     // A goal cannot be a liability for itself
     return false;
   }
-  if (liability.isOverdrawn()) {
-    // Purchased and overdrawn goals are presumptive liabilties
-    return true;
-  }
-  if (liability.isEarmarked() && !target.isPurchased() ) {
-    // Earmarked goals are liabilities for any non-purchased goal
-    return true;
-  }
-  // If the liability isn't purchased or earmarked, then it isn't a liability
-  return false;
+
+  const liabilityStatus = goalPrecedence(liability);
+  const targetStatus = goalPrecedence(target);
+
+  return liabilityStatus >= targetStatus;
 }
 
 function getLiabilities(budget: Budget, recipient: Goal): Liability[] {

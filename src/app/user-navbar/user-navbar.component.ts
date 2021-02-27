@@ -10,9 +10,9 @@ export class UserNavbarComponent {
 
   constructor(public budgetsService: Budgets) {
     budgetsService.list().subscribe(budgets => {
-      this.totalSaved = budgets
+      this.totalSaved = budgets.length > 0 ? budgets
         .map(budget => budget.totalBalance())
-        .reduce((balance, sum) => sum + balance, 0);
+        .reduce((balance, sum) => sum + balance, 0) : undefined;
     });
 
   }

@@ -29,7 +29,7 @@ function goalPrecedence(goal: Goal): LoanPrecedence {
   }
 }
 
-function canLoanTo(origin: Goal, recipient: Goal): boolean {
+function canLoanTo(origin: Goal, recipient?: Goal): boolean {
   if (recipient === origin) {
     // A goal can always "loan" to itself
     return true;
@@ -40,30 +40,31 @@ function canLoanTo(origin: Goal, recipient: Goal): boolean {
   }
 
   const originStatus = goalPrecedence(origin);
-  const recipientStatus = goalPrecedence(recipient);
 
   if (originStatus === LoanPrecedence.Normal) {
     // Normal level goals can always loan to other goals
     return true;
   }
 
+  const recipientStatus = recipient ? goalPrecedence(recipient) : LoanPrecedence.Normal;
+
   // Non-normal goals only loan to goals at a higher precedence
   return originStatus < recipientStatus;
 }
 
-function isLiabilityFor(liability: Goal, target: Goal): boolean {
+function isLiabilityFor(liability: Goal, target?: Goal): boolean {
   if (liability === target) {
     // A goal cannot be a liability for itself
     return false;
   }
 
   const liabilityStatus = goalPrecedence(liability);
-  const targetStatus = goalPrecedence(target);
+  const targetStatus = target ? goalPrecedence(target) : LoanPrecedence.Normal;
 
   return liabilityStatus >= targetStatus;
 }
 
-function getLiabilities(budget: Budget, recipient: Goal): Liability[] {
+function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {
   return budget.goals.filter(
     liability => isLiabilityFor(liability, recipient)
   ).map<Liability>(goal => ({
@@ -74,7 +75,7 @@ function getLiabilities(budget: Budget, recipient: Goal): Liability[] {
   );
 }
 
-function getLoaners(budget: Budget, recipient: Goal): Loaner[] {
+function getLoaners(budget: Budget, recipient?: Goal): Loaner[] {
   return budget.goals.filter(
     // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
     goal => canLoanTo(goal, recipient)
@@ -111,12 +112,13 @@ function allocateLoan(loaner: Loaner, liability: Liability, safeLoan: boolean): 
 }
 
 
-function calculateLoanableBalance(loaners: Loaner[], recipient: Goal) {
+function calculateLoanableBalance(loaners: Loaner[], recipient?: Goal) {
   // If the recipient is itself a loaner, use that to determine how much of its own balance was
   //  necessary to be allocated to other goals.
-  // If it isn't a loaner, then it can presumably contribute its entire current allocation
+  // If it isn't a loaner, then it can presumably contribute its entire current allocation.
+  // If there isn't a current allocation, then it doesn't have anything to contribute.
   const recipientLoaner = loaners.find(loaner => loaner.goal === recipient);
-  const baseContribution = recipientLoaner ? recipientLoaner.available : recipient.current;
+  const baseContribution: number = (recipientLoaner?.available || recipient?.current || 0);
 
   // Remove the recipient from the remainder of the loaners, then sort by increasing target.
   // This will ensure that loans that can only contribute to small balances are handled first,
@@ -140,7 +142,7 @@ function calculateLoanableBalance(loaners: Loaner[], recipient: Goal) {
 }
 
 
-export function loanableBalance(budget: Budget, recipient: Goal): number {
+export function loanableBalance(budget: Budget, recipient?: Goal): number {
   // Calculating how much can be safely loaned to a goal is relatively complicated
   // To help simplify the already complex relationships, we assume that all goals accrue savings at the same rate.
   // (So long as purchased goals are ranked above non-purchased goals, this is safely a conservative assumption)

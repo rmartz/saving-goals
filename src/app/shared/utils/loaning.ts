@@ -12,8 +12,8 @@ interface Loaner {
   maxLoan: number;
 }
 
-
 enum LoanPrecedence {
+  Priority,
   Earmarked,
   Normal,
   Purchased,
@@ -22,6 +22,8 @@ enum LoanPrecedence {
 function goalPrecedence(goal: Goal): LoanPrecedence {
   if (goal.isEarmarked()) {
     return LoanPrecedence.Earmarked;
+  } else if (goal.isPriority()) {
+    return LoanPrecedence.Priority;
   } else if (goal.isPurchased()) {
     return LoanPrecedence.Purchased;
   } else {

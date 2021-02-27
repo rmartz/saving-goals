@@ -40,6 +40,12 @@
       Earmarked ⓘ
     </label>
     <br />
+    <input id="goalBehaviorPriority" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="PRIORITY">
+    <label for="goalBehaviorPriority"
+    title="Priority goals description TBD">
+      Priority ⓘ
+    </label>
+    <br />
     <input id="goalBehaviorPaused" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="PAUSED">
     <label for="goalBehaviorPaused"
       title="Paused goals are skipped when adding funds, but will continue to safely loan funds they already have to other goals">

@@ -25,9 +25,22 @@
       required>
   </span>
 
-  <div *ngIf="!this.goal?.purchased">
+  <div *ngIf="!this.goal?.purchased" class="goal-item-behavior-select">
     <strong>Goal Behavior</strong>
-    <br />
+
+    <p *ngIf="behavior === ''">
+      <em>Normal</em> goals will loan other goals funds safely, in a way that they can be purchased once fully funded
+    </p>
+    <p *ngIf="behavior === 'EARMARKED'">
+      <em>Earmarked</em> goals are placed above Normal goals in the budget and will preemptively reserve loans from other goals to simulate that they have been purchased
+    </p>
+    <p *ngIf="behavior === 'PRIORITY'">
+      <em>Priority</em> goals are ranked highest in the budget and do not loan to other goals, but do not preemptively reserve loans like Earmarked goals
+    </p>
+    <p *ngIf="behavior === 'PAUSED'">
+      <em>Paused</em> goals are skipped when adding funds, but will continue to safely loan funds they already have to other goals
+    </p>
+
     <input id="goalBehaviorDefault" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="">
     <label for="goalBehaviorDefault"
       title="By default, goals will loan other goals funds safely, in a way that they can be purchased once fully funded">
@@ -52,6 +65,8 @@
       Paused ⓘ
     </label>
   </div>
+
+  <br />
 
   <button
     type="submit"

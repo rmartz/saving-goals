@@ -227,6 +227,21 @@ ul.budget-list {
   color: #a0a0a0;
 }
 
+.goal-item-behavior-select {
+  margin-top: 0.3rem;
+}
+
+.goal-item-behavior-select p {
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.goal-item-behavior-select em {
+  font-weight: bold;
+  font-style: normal;
+  color: #333;
+}
+
 .budget-column:not(:last-child) {
   border-right: 1px solid #b0b0b0;
   border-top: 1px solid #b0b0b0;

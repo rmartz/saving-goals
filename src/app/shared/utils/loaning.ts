@@ -1,5 +1,5 @@
 import { Budget } from '../models/budget.model';
-import { Goal } from '../models/goal.model';
+import { Goal, GoalStatus } from '../models/goal.model';
 
 interface Liability {
   goal: Goal;
@@ -12,26 +12,31 @@ interface Loaner {
   maxLoan: number;
 }
 
-
 function canLoanTo(origin: Goal, recipient?: Goal): boolean {
   if (recipient === origin) {
     // A goal can always "loan" to itself
     return true;
   }
-  if (origin.isFunded()) {
-    // A funded goal has no capacity to loan to other goals
-    return false;
+
+  const originStatus = origin.status();
+  switch (originStatus) {
+    case GoalStatus.Normal:
+      // Normal status goals are safe to loan to any other goal
+      return true;
+    case GoalStatus.Funded:
+      // Funded goals don't have any funds available to loan
+      return false;
+    case GoalStatus.Purchased:
+      // Purchased goals have a negative balance and no capacity to issue loans
+      return false;
+    case GoalStatus.Earmarked:
+    case GoalStatus.Priority:
+      // Earmarked and priority goals only loan to purchased goals
+      const recipientStatus = recipient ? recipient.status() : GoalStatus.Normal;
+      return (recipientStatus === GoalStatus.Purchased);
+    default:
+      throw new Error(`Unexpected GoalStatus value ${originStatus}`);
   }
-  if (origin.isPurchased()) {
-    // Purchased goals have a negative balance and cannot loan to any other goal
-    return false;
-  }
-  if (origin.isEarmarked()) {
-    // Earmarked goals can only loan to cover balance of already purchased goals
-    return (recipient !== undefined) && recipient.isPurchased();
-  }
-  // If any of the other situations don't exist, then it's safe for this goal to loan to any goal
-  return true;
 }
 
 function isLiabilityFor(liability: Goal, target?: Goal): boolean {
@@ -39,16 +44,20 @@ function isLiabilityFor(liability: Goal, target?: Goal): boolean {
     // A goal cannot be a liability for itself
     return false;
   }
-  if (liability.isOverdrawn()) {
-    // Purchased and overdrawn goals are presumptive liabilties
-    return true;
+
+  const liabilityStatus = liability.status();
+  switch (liabilityStatus) {
+    case GoalStatus.Purchased:
+      // Purchased goals are presumptive liabilities
+      return true;
+    case GoalStatus.Earmarked:
+      // Earmarked goals are a liability for any non-purchased goal
+      const targetStatus = target ? target.status() : GoalStatus.Normal;
+      return (targetStatus !== GoalStatus.Purchased);
+    default:
+      // If the goal isn't purchased or earmarked, then it isn't a liability
+      return false;
   }
-  if (liability.isEarmarked() && !(target && target.isPurchased())) {
-    // Earmarked goals are liabilities for any non-purchased goal
-    return true;
-  }
-  // If the liability isn't purchased or earmarked, then it isn't a liability
-  return false;
 }
 
 function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {
@@ -64,7 +73,6 @@ function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {
 
 function getLoaners(budget: Budget, recipient?: Goal): Loaner[] {
   return budget.goals.filter(
-    // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
     goal => canLoanTo(goal, recipient)
   ).map<Loaner>(
     goal => ({

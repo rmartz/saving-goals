@@ -215,8 +215,31 @@ ul.budget-list {
   border: 2px solid #333;
 }
 
+.goal-item-priority {
+  background: linear-gradient(90deg, #FFDB99 0, #fdeac7 30%);
+}
+
+.goal-item-affordable.goal-item-priority {
+  background: linear-gradient(90deg, #FFDB99 0, #e0dff0 30%);
+}
+
 .goal-item-paused .goal-item-detail-content {
   color: #a0a0a0;
+}
+
+.goal-item-behavior-select {
+  margin-top: 0.3rem;
+}
+
+.goal-item-behavior-select p {
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.goal-item-behavior-select em {
+  font-weight: bold;
+  font-style: normal;
+  color: #333;
 }
 
 .budget-column:not(:last-child) {

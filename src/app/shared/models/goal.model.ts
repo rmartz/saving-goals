@@ -4,6 +4,7 @@ import { disperseBalance } from '../utils/dispersement';
 
 export enum GoalStatus {
   Funded,
+  Priority,
   Earmarked,
   Purchased,
   Normal
@@ -11,6 +12,7 @@ export enum GoalStatus {
 
 export enum GoalBehavior {
   Default = '',
+  Priority = 'PRIORITY',
   Paused = 'PAUSED',
   Earmarked = 'EARMARKED',
 }
@@ -213,6 +215,10 @@ export class Goal implements IGoal {
     return this.behavior === GoalBehavior.Earmarked && !this.isPurchased();
   }
 
+  public isPriority(): boolean {
+    return this.behavior === GoalBehavior.Priority && !this.isPurchased();
+  }
+
   public isPaused(): boolean {
     return this.behavior === GoalBehavior.Paused && !this.isPurchased();
   }
@@ -220,10 +226,12 @@ export class Goal implements IGoal {
   public status(): GoalStatus {
     if (this.isFunded()) {
       return GoalStatus.Funded;
-    } else if (this.isEarmarked()) {
-      return GoalStatus.Earmarked;
     } else if (this.isPurchased()) {
-      return GoalStatus.Purchased;
+        return GoalStatus.Purchased;
+    } else if (this.behavior === GoalBehavior.Earmarked) {
+      return GoalStatus.Earmarked;
+    } else if (this.behavior === GoalBehavior.Priority) {
+      return GoalStatus.Priority;
     } else {
       return GoalStatus.Normal;
     }

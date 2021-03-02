@@ -50,8 +50,8 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
 
   const recipientStatus = recipient ? goalPrecedence(recipient) : LoanPrecedence.Normal;
 
-  // Non-normal goals only loan to goals at a higher precedence
-  return originStatus < recipientStatus;
+  // Non-normal goals loan to goals at the same or higher precedence
+  return recipientStatus >= originStatus;
 }
 
 function isLiabilityFor(liability: Goal, target?: Goal): boolean {

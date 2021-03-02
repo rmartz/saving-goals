@@ -67,7 +67,6 @@ function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {
 
 function getLoaners(budget: Budget, recipient?: Goal): Loaner[] {
   return budget.goals.filter(
-    // Only use goals that haven't been purchased (That have savings to loan) and aren't funded (That don't need their savings directly)
     goal => canLoanTo(goal, recipient)
   ).map<Loaner>(
     goal => ({

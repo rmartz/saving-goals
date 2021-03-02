@@ -1,5 +1,5 @@
 import { Budget } from '../models/budget.model';
-import { Goal, GoalBehavior } from '../models/goal.model';
+import { Goal, GoalBehavior, GoalStatus } from '../models/goal.model';
 
 interface Liability {
   goal: Goal;
@@ -12,46 +12,25 @@ interface Loaner {
   maxLoan: number;
 }
 
-enum LoanPrecedence {
-  Normal,
-  Priority,
-  Earmarked,
-  Purchased,
-}
-
-function goalPrecedence(goal: Goal): LoanPrecedence {
-  if (goal.isPurchased()) {
-    return LoanPrecedence.Purchased;
-  } else if (goal.behavior === GoalBehavior.Earmarked) {
-    return LoanPrecedence.Earmarked;
-  } else if (goal.behavior === GoalBehavior.Priority) {
-    return LoanPrecedence.Priority;
-  } else {
-    return LoanPrecedence.Normal;
-  }
-}
-
 function canLoanTo(origin: Goal, recipient?: Goal): boolean {
   if (recipient === origin) {
     // A goal can always "loan" to itself
     return true;
   }
 
-  const originStatus = goalPrecedence(origin);
-
-  if (originStatus === LoanPrecedence.Normal) {
-    // Normal status goals are safe to loan to any other goal
-    return true;
-  } else if (originStatus === LoanPrecedence.Purchased) {
-    // Purchased goals have a negative balance and cannot make loans
-    return false;
+  const originStatus = origin.status();
+  switch (originStatus) {
+    case GoalStatus.Normal:
+      // Normal status goals are safe to loan to any other goal
+      return true;
+    case GoalStatus.Purchased:
+      // Purchased goals have a negative balance and no capacity to issue loans
+      return false;
+    default:
+      // Earmarked and priority goals only loan to purchased goals
+      const recipientStatus = recipient ? recipient.status() : GoalStatus.Normal;
+      return (recipientStatus === GoalStatus.Purchased)
   }
-
-  // Other status goals can loan to goals of a higher tier than them...
-  // - Priority status goals can loan to earmarked or purchased goals,
-  // - Earmarked goals can loan only to purchased goals.
-  const recipientStatus = recipient ? goalPrecedence(recipient) : LoanPrecedence.Normal;
-  return recipientStatus > originStatus;
 }
 
 function isLiabilityFor(liability: Goal, target?: Goal): boolean {
@@ -60,17 +39,19 @@ function isLiabilityFor(liability: Goal, target?: Goal): boolean {
     return false;
   }
 
-  const liabilityStatus = goalPrecedence(liability);
-  if (liabilityStatus !== LoanPrecedence.Earmarked && liabilityStatus !== LoanPrecedence.Purchased) {
-    // Only purchased or earmarked goals can be liabilities
-    return false;
+  const liabilityStatus = liability.status();
+  switch (liabilityStatus) {
+    case GoalStatus.Purchased:
+      // Purchased goals are presumptive liabilities
+      return true;
+    case GoalStatus.Earmarked:
+      // Earmarked goals are liabilities for normal status goals
+      const targetStatus = target ? target.status() : GoalStatus.Normal;
+      return (targetStatus === GoalStatus.Normal);
+    default:
+      // If the goal isn't purchased or earmarked, then it isn't a liability
+      return false;
   }
-
-  // Liabilities apply to goals of a lower tier
-  // - Purchased goals are a liability for all non-purchased tiers
-  // - Earmarked goals are a liability for normal and priority goals
-  const targetStatus = target ? goalPrecedence(target) : LoanPrecedence.Normal;
-  return liabilityStatus > targetStatus;
 }
 
 function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {

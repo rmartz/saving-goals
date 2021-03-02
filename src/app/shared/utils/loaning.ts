@@ -26,10 +26,13 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
     case GoalStatus.Purchased:
       // Purchased goals have a negative balance and no capacity to issue loans
       return false;
-    default:
+    case GoalStatus.Earmarked:
+    case GoalStatus.Priority:
       // Earmarked and priority goals only loan to purchased goals
       const recipientStatus = recipient ? recipient.status() : GoalStatus.Normal;
       return (recipientStatus === GoalStatus.Purchased);
+    default:
+      throw new Error(`Unexpected GoalStatus value ${originStatus}`)
   }
 }
 

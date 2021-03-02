@@ -23,6 +23,9 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
     case GoalStatus.Normal:
       // Normal status goals are safe to loan to any other goal
       return true;
+    case GoalStatus.Funded:
+      // Funded goals don't have any funds available to loan
+      return false;
     case GoalStatus.Purchased:
       // Purchased goals have a negative balance and no capacity to issue loans
       return false;

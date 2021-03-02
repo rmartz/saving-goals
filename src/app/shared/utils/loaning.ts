@@ -13,9 +13,9 @@ interface Loaner {
 }
 
 enum LoanPrecedence {
+  Normal,
   Priority,
   Earmarked,
-  Normal,
   Purchased,
 }
 
@@ -36,22 +36,22 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
     // A goal can always "loan" to itself
     return true;
   }
-  if (origin.isFunded()) {
-    // A funded goal has zero loanable balance, so it effectively cannot loan
-    return false;
-  }
 
   const originStatus = goalPrecedence(origin);
 
   if (originStatus === LoanPrecedence.Normal) {
-    // Normal level goals can always loan to other goals
+    // Normal status goals are safe to loan to any other goal
     return true;
+  } else if (originStatus === LoanPrecedence.Purchased) {
+    // Purchased goals have a negative balance and cannot make loans
+    return false;
   }
 
+  // Other status goals can loan to goals of a higher tier than them...
+  // - Priority status goals can loan to earmarked or purchased goals,
+  // - Earmarked goals can loan only to purchased goals.
   const recipientStatus = recipient ? goalPrecedence(recipient) : LoanPrecedence.Normal;
-
-  // Non-normal goals loan to goals at the same or higher precedence
-  return recipientStatus >= originStatus;
+  return recipientStatus > originStatus;
 }
 
 function isLiabilityFor(liability: Goal, target?: Goal): boolean {

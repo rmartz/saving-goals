@@ -61,9 +61,16 @@ function isLiabilityFor(liability: Goal, target?: Goal): boolean {
   }
 
   const liabilityStatus = goalPrecedence(liability);
-  const targetStatus = target ? goalPrecedence(target) : LoanPrecedence.Normal;
+  if (liabilityStatus !== LoanPrecedence.Earmarked && liabilityStatus !== LoanPrecedence.Purchased) {
+    // Only purchased or earmarked goals can be liabilities
+    return false;
+  }
 
-  return liabilityStatus >= targetStatus;
+  // Liabilities apply to goals of a lower tier
+  // - Purchased goals are a liability for all non-purchased tiers
+  // - Earmarked goals are a liability for normal and priority goals
+  const targetStatus = target ? goalPrecedence(target) : LoanPrecedence.Normal;
+  return liabilityStatus > targetStatus;
 }
 
 function getLiabilities(budget: Budget, recipient?: Goal): Liability[] {

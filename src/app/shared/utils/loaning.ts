@@ -1,5 +1,5 @@
 import { Budget } from '../models/budget.model';
-import { Goal, GoalBehavior, GoalStatus } from '../models/goal.model';
+import { Goal, GoalStatus } from '../models/goal.model';
 
 interface Liability {
   goal: Goal;
@@ -45,9 +45,9 @@ function isLiabilityFor(liability: Goal, target?: Goal): boolean {
       // Purchased goals are presumptive liabilities
       return true;
     case GoalStatus.Earmarked:
-      // Earmarked goals are liabilities for normal status goals
+      // Earmarked goals are a liability for any non-purchased goal
       const targetStatus = target ? target.status() : GoalStatus.Normal;
-      return (targetStatus === GoalStatus.Normal);
+      return (targetStatus !== GoalStatus.Purchased);
     default:
       // If the goal isn't purchased or earmarked, then it isn't a liability
       return false;

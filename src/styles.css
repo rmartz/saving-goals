@@ -216,7 +216,11 @@ ul.budget-list {
 }
 
 .goal-item-priority {
-  background: linear-gradient(90deg, #FFDB99 0, #FFF3DE 40%);
+  background: linear-gradient(90deg, #FFDB99 0, #fdeac7 30%);
+}
+
+.goal-item-affordable.goal-item-priority {
+  background: linear-gradient(90deg, #FFDB99 0, #e0dff0 30%);
 }
 
 .goal-item-paused .goal-item-detail-content {

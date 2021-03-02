@@ -36,13 +36,13 @@
     <br />
     <input id="goalBehaviorEarmarked" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="EARMARKED">
     <label for="goalBehaviorEarmarked"
-    title="Earmarked goals are placed at the top of the list and try to reserve funds like they have already been purchased">
+    title="Earmarked goals are placed above Normal goals in the budget and will preemptively reserve loans from other goals to simulate that they have been purchased">
       Earmarked ⓘ
     </label>
     <br />
     <input id="goalBehaviorPriority" type="radio" [(ngModel)]="behavior" name="goalBehavior" value="PRIORITY">
     <label for="goalBehaviorPriority"
-    title="Priority goals description TBD">
+    title="Priority goals are ranked highest in the budget and do not loan to other goals, but do not preemptively reserve loans like Earmarked goals">
       Priority ⓘ
     </label>
     <br />

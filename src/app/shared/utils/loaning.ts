@@ -1,5 +1,5 @@
 import { Budget } from '../models/budget.model';
-import { Goal } from '../models/goal.model';
+import { Goal, GoalBehavior } from '../models/goal.model';
 
 interface Liability {
   goal: Goal;
@@ -20,12 +20,12 @@ enum LoanPrecedence {
 }
 
 function goalPrecedence(goal: Goal): LoanPrecedence {
-  if (goal.isEarmarked()) {
-    return LoanPrecedence.Earmarked;
-  } else if (goal.isPriority()) {
-    return LoanPrecedence.Priority;
-  } else if (goal.isPurchased()) {
+  if (goal.isPurchased()) {
     return LoanPrecedence.Purchased;
+  } else if (goal.behavior === GoalBehavior.Earmarked) {
+    return LoanPrecedence.Earmarked;
+  } else if (goal.behavior === GoalBehavior.Priority) {
+    return LoanPrecedence.Priority;
   } else {
     return LoanPrecedence.Normal;
   }

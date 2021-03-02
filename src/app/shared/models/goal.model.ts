@@ -226,12 +226,12 @@ export class Goal implements IGoal {
   public status(): GoalStatus {
     if (this.isFunded()) {
       return GoalStatus.Funded;
-    } else if (this.isEarmarked()) {
-      return GoalStatus.Earmarked;
-    } else if (this.isPriority()) {
-      return GoalStatus.Priority;
     } else if (this.isPurchased()) {
-      return GoalStatus.Purchased;
+        return GoalStatus.Purchased;
+    } else if (this.behavior === GoalBehavior.Earmarked) {
+      return GoalStatus.Earmarked;
+    } else if (this.behavior === GoalBehavior.Priority) {
+      return GoalStatus.Priority;
     } else {
       return GoalStatus.Normal;
     }

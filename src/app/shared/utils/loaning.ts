@@ -35,7 +35,7 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
       const recipientStatus = recipient ? recipient.status() : GoalStatus.Normal;
       return (recipientStatus === GoalStatus.Purchased);
     default:
-      throw new Error(`Unexpected GoalStatus value ${originStatus}`)
+      throw new Error(`Unexpected GoalStatus value ${originStatus}`);
   }
 }
 

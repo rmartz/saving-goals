@@ -29,7 +29,7 @@ function canLoanTo(origin: Goal, recipient?: Goal): boolean {
     default:
       // Earmarked and priority goals only loan to purchased goals
       const recipientStatus = recipient ? recipient.status() : GoalStatus.Normal;
-      return (recipientStatus === GoalStatus.Purchased)
+      return (recipientStatus === GoalStatus.Purchased);
   }
 }
 
